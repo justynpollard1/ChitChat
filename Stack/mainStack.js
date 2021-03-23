@@ -3,28 +3,41 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from './views/Home';
-import Settings from './views/Settings';
+import Home from '../views/Home';
+import Settings from '../views/Settings';
+import Auth from '../views/Auth';
+import Signup from '../views/Signup';
 
 
+const mainStack = createStackNavigator();
 
-const Stack = createStackNavigator();
+class MainStack extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      userToken: 1
+    }
+  }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={Home}
-        />
-        <Stack.Screen 
-        name = "Settings" 
-        component={Settings} 
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  render() {
+    return (
+      <NavigationContainer>
+        <mainStack.Navigator>
+        {this.state.userToken != null ? (
+          <>
+          <mainStack.Screen name="Home" component={Home}/>
+          <mainStack.Screen name="Settings" component={Settings}/>
+          </>
+        ) : (
+          <>
+          <mainStack.Screen name="Auth" component={Auth}/>
+          <mainStack.Screen name="Signup" component={Signup}/> 
+          </>
+        )}
+        </mainStack.Navigator>
+      </NavigationContainer>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -35,3 +48,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default MainStack;
