@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TextInput } from 'react-native-gesture-handler';
+import {auth} from '../firebase/Fire';
 
 class Auth extends React.Component {
   state ={
@@ -13,6 +14,14 @@ class Auth extends React.Component {
   constructor(navigation) {
     super(navigation)
   }
+
+  handleLogin = () => {
+    const {email, password} = this.state
+    auth.signInWithEmailAndPassword(email, password)
+    .then(() => this.props.navigation.replace('HomeStack', {screen: 'Home'}))
+    .catch(error => console.log(error))
+  }
+
 
   render() {
     return (
@@ -32,7 +41,7 @@ class Auth extends React.Component {
               placeholder='Password'
               secureTextEntry={true}
             />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
                     <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <Button title="signup" onPress={() => this.props.navigation.navigate('Signup')}/>
