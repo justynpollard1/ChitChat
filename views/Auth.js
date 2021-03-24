@@ -8,10 +8,9 @@ class Auth extends React.Component {
   state ={
     email: '',
     password: '',
-    nav: null
   }
 
-  constructor({navigation}) {
+  constructor(navigation) {
     super(navigation)
   }
 

@@ -1,4 +1,4 @@
-import * as firebase from 'firebase';
+import firebase from 'firebase';
 import "firebase/storage";
 import "firebase/database"
 import "@firebase/firestore"
@@ -17,13 +17,11 @@ const firebaseConfig = {
   
   
   if(!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig)
-  }
-
-  export const db = firebase.firestore();
-
-  export const storage = firebase.storage();
-
-  export  const auth = firebase.auth();
-
-  export const google = firebase.auth;
+    firebase.initializeApp(firebaseConfig)
+    }
+  
+    export const db = firebase.firestore();
+  
+    export const storage = firebase.storage();
+  
+    export const auth = firebase.auth();

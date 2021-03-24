@@ -2,12 +2,23 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import {auth} from '../firebase/Fire';
 
 class Signup extends React.Component {
     state = {
         name: '',
         email: '',
         password: ''
+    }
+    constructor(navigation){
+        super(navigation)
+    }
+
+    handleSignUp = () => {
+        const { email, password } = this.state
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(() => this.props.navigation.replace('HomeStack', {screen: 'Home'}))
+            .catch(error => console.log(error))
     }
 
     render() {
@@ -34,7 +45,7 @@ class Signup extends React.Component {
                     placeholder='Password'
                     secureTextEntry={true}
                 />
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={this.handleSignUp}>
                     <Text style={styles.buttonText}>Signup</Text>
                 </TouchableOpacity>
             </View>

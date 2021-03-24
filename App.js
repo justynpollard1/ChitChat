@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import MainStack from './Stack/MainStack'
+import { Provider } from 'react-redux'
+
 
 export default function App() {
   return (
-    <MainStack/>
+      <MainStack/>
   )
 }
 

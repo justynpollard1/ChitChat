@@ -7,36 +7,35 @@ import Settings from '../views/Settings';
 import Auth from '../views/Auth';
 import Signup from '../views/Signup';
 
-
 const mainStack = createStackNavigator();
+const homeStack = createStackNavigator();
+const authStack = createStackNavigator();
 
-class MainStack extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      userToken: null
-    }
-  }
-
-  render() {
+function MainStack() {
     return (
       <NavigationContainer>
-        <mainStack.Navigator>
-        {this.state.userToken != null ? (
-          <>
-          <mainStack.Screen name="Home" component={Home}/>
-          <mainStack.Screen name="Settings" component={Settings}/>
-          </>
-        ) : (
-          <>
-          <mainStack.Screen name="Auth" component={Auth}/>
-          <mainStack.Screen name="Signup" component={Signup}/> 
-          </>
-        )}
+        <mainStack.Navigator initialRouteName="AuthStack" headerMode="none">
+          <mainStack.Screen name="AuthStack" component={AuthStack}/>
+          <mainStack.Screen name="HomeStack" component={HomeStack}/>
         </mainStack.Navigator>
       </NavigationContainer>
     )
   }
+
+function HomeStack() {
+  return (
+  <homeStack.Navigator>
+    <homeStack.Screen name="Home" component={Home}/>
+    <homeStack.Screen name="Settings" component={Settings}/>
+  </homeStack.Navigator>)
+}
+
+function AuthStack() {
+  return(
+  <authStack.Navigator>
+      <authStack.Screen name="Auth" component={Auth}/>
+      <authStack.Screen name="Signup" component={Signup}/> 
+  </authStack.Navigator>)
 }
 
 const styles = StyleSheet.create({

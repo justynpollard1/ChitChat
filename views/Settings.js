@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Alert} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-function Settings() {
+function Settings({navigation}) {
   return (
     <View style={styles.container}>
           <Text style={styles.text} >Settings</Text>
