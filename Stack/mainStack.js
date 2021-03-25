@@ -25,7 +25,7 @@ function MainStack() {
 function HomeStack() {
   return (
   <homeStack.Navigator>
-    <homeStack.Screen name="Home" component={Home}/>
+    <homeStack.Screen name="Home" component={Home} />
     <homeStack.Screen name="Settings" component={Settings}/>
   </homeStack.Navigator>)
 }

@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Button, Alert} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import Context from '../contextAPI/context';
 
-function Home({navigation}) {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-      <Button onPress={() => navigation.navigate('Settings')} title="Settings"/>
-      )
-    })
-  })
+class Home extends React.Component {
+  static contextType = Context
+  constructor(props){
+    super(props)
+  }
+
+  componentDidMount() {
+    this.setLayout();
+  }
+  componentDidUpdate() {
+    this.setLayout();
+  }
+
+  setLayout() {
+      this.props.navigation.setOptions({
+        headerRight: () => (
+        <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
+        )
+      })
+    
+  }
+
+  render() {
   return (
     <View style={styles.container}>
-          <Text style={styles.text} >Home</Text>
+        <Text style={styles.text} >{this.context.userData.password}</Text>
     </View>
     );
   }
+}
 
   const styles = StyleSheet.create({
     container: {
