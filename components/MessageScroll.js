@@ -20,7 +20,7 @@ export default class MessageScroll extends React.Component {
         for (var i = 0; i < messagesDoc.length; i++) {
             const messageInfo = {
                 sender: (await db.collection('users').doc(messagesDoc[i].uid).get()).data().name,
-                message: messagesDoc[i].msg,
+                msg: messagesDoc[i].msg,
                 timeSent: messagesDoc[i].timeSent
             }
             messageArray.push(messageInfo)
@@ -29,7 +29,6 @@ export default class MessageScroll extends React.Component {
     }
     render(){
         this.getMessages(this.state.chatID)
-        
         return (
             <ScrollView>
                 <View>

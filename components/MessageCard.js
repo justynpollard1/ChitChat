@@ -10,11 +10,10 @@ class MessageCard extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.side_stripe}></View>
-                <View style={styles.text}><Text style={styles.senderText}>{this.props.sender}</Text></View>
-                <View style={styles.text}><Text style={styles.body_text}>{this.props.message}</Text></View>
-                <View style={styles.text}><Text style={styles.timeSent_text}>{this.props.timeSent}</Text></View>
+                    <View style={styles.text}><Text style={styles.senderText}>{this.props.sender}</Text></View>
+                    <View style={styles.text}><Text style={styles.body_text}>{this.props.message}</Text></View>
+                    <View tyle={styles.text}><Text style={styles.timeSent_text}>{this.props.timeSent}</Text></View>
                 <View style={styles.side_stripe}></View>
-                <View ></View>
             </View>
         )
     }
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
         width: '95%',
         height: 100,
         shadowColor: 'rgba(207, 207, 207, 0.15)',
-        shadowOffset: {
+        shadowOffset: { 
         width: 0,
         height: 4,
         },
@@ -50,8 +49,13 @@ const styles = StyleSheet.create({
         lineHeight: 13,
         color: '#676767'
     },
+    time_sent_container: {
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end',
+    },
     timeSent_text: {
-        fontWeight: 'bold',
+        
+        fontWeight: 'normal',
         fontSize: 14,
         lineHeight: 14,
         color: '#676767'
