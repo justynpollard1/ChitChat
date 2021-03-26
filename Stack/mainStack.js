@@ -6,6 +6,7 @@ import Home from '../views/Home';
 import Settings from '../views/Settings';
 import Auth from '../views/Auth';
 import Signup from '../views/Signup';
+import Message from '../views/Message';
 
 const mainStack = createStackNavigator();
 const homeStack = createStackNavigator();
@@ -27,6 +28,7 @@ function HomeStack() {
   <homeStack.Navigator>
     <homeStack.Screen name="Home" component={Home} />
     <homeStack.Screen name="Settings" component={Settings}/>
+    <homeStack.Screen name="Message" component={Message}/>
   </homeStack.Navigator>)
 }
 

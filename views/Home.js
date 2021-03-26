@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Button, Alert} from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../contextAPI/context';
 
 class Home extends React.Component {
@@ -28,6 +29,9 @@ class Home extends React.Component {
   return (
     <View style={styles.container}>
         <Text style={styles.text} >{this.context.userData.password}</Text>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Message')}>
+                    <Text >Message</Text>
+          </TouchableOpacity>
     </View>
     );
   }
