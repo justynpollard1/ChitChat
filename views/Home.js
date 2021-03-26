@@ -22,13 +22,13 @@ class Home extends React.Component {
         <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
         )
       })
-    
+
   }
 
   render() {
   return (
     <View style={styles.container}>
-        <Text style={styles.text} >{this.context.userData.password}</Text>
+
         <TouchableOpacity onPress={() => this.props.navigation.navigate('Message')}>
                     <Text >Message</Text>
           </TouchableOpacity>
