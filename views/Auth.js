@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { TextInput } from 'react-native-gesture-handler';
-import {auth} from '../firebase/Fire';
+import {auth, db} from '../firebase/Fire';
+import Context from '../contextAPI/context';
 
 class Auth extends React.Component {
   state ={
@@ -15,14 +14,15 @@ class Auth extends React.Component {
     super(navigation)
   }
 
-  handleLogin = () => {
+  handleLogin = async () => {
     const {email, password} = this.state
-    auth.signInWithEmailAndPassword(email, password)
-    .then(() => this.props.navigation.replace('HomeStack', {screen: 'Home'}))
-    .catch(error => console.log(error))
+    const response = await auth.signInWithEmailAndPassword(email, password)
+    const userData = await db.collection('users').doc(response.user.uid).get()
+    this.context.updateUserData(userData.data())
+    this.props.navigation.replace('HomeStack', {screen: 'Home'})
   }
 
-
+  static contextType = Context;
   render() {
     return (
       <View style={styles.container}>

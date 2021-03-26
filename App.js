@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import MainStack from './Stack/MainStack'
-import { Provider } from 'react-redux'
+import GlobalState from './contextAPI/globalState'
 
-
-export default function App() {
-  return (
-      <MainStack/>
-  )
+export default class App extends React.Component {
+  render(){
+    return (
+      <GlobalState>
+        <MainStack/>
+      </GlobalState>
+  )}
 }
 
 const styles = StyleSheet.create({

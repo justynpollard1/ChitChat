@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import {auth} from '../firebase/Fire';
+import {auth, db} from '../firebase/Fire';
+import context, {UserDataContext} from '../contextAPI/context';
 
 class Signup extends React.Component {
+    static contextType = context
     state = {
         name: '',
         email: '',
@@ -14,11 +14,20 @@ class Signup extends React.Component {
         super(navigation)
     }
 
-    handleSignUp = () => {
+    handleSignUp = async () => {
         const { email, password } = this.state
-        auth.createUserWithEmailAndPassword(email, password)
-            .then(() => this.props.navigation.replace('HomeStack', {screen: 'Home'}))
-            .catch(error => console.log(error))
+        const response = await auth.createUserWithEmailAndPassword(email, password)
+        const data = {
+            name: this.state.name,
+            email: this.state.email,
+            password: this.state.password,
+            UID: response.user.uid
+          }
+          db.collection('users')
+            .doc(response.user.uid)
+            .set(data)
+          this.context.updateUserData(data)
+          this.props.navigation.replace('HomeStack', {screen: 'Home'})
     }
 
     render() {
