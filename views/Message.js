@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Alert} from 'react-native';
-import MessageScroll from '../components/MessageScroll'
+import MessageScroll from '../components/MessageDisplay/MessageScroll'
 
 class Message extends React.Component{
 
     constructor(props) {
         super(props)
         this.state = {
-            chatID: "g84iVN3pgrI0czGiTtAA"
+            chatID: this.props.route.params.roomID,
         }
     }
 

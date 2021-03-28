@@ -21,7 +21,7 @@ class Signup extends React.Component {
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
-            UID: response.user.uid
+            uid: response.user.uid
           }
           db.collection('users')
             .doc(response.user.uid)
