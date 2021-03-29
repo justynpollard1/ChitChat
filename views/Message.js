@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
-import MessageScroll from '../components/MessageScroll'
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {auth, db} from "../firebase/Fire";
 import {TextInput} from "react-native-gesture-handler";
 
