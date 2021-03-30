@@ -18,22 +18,36 @@ class Message extends React.Component{
         e.preventDefault();
         let date = new Date();
 
-        // create a new message document
-        // todo: update time stamp to SERVER TIME, couldn't get it working, moved on instead
+        // add message to the db
         const res = await db.collection('messages').add({
             msg: this.state.message,
             timeSent: date.getDate()+ "/"+date.getMonth() + "/" + date.getFullYear(),
             uid: auth.currentUser.uid
         });
 
-        const res2 = await db.collection('indivualChats').doc(this.state.chatID).update({
-            messages: db.FieldValue.arrayUnion({
-                mid: res.id,
-                msg: this.state.message,
-                timeSent: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
-                uid: auth.currentUser.uid})
+        const newMessage = {
+            mid: res.id,
+            msg: this.state.message,
+            timeSent: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
+            uid: auth.currentUser.uid
+        }
+
+        let messageArr = [];
+
+        //get the array of maps from db
+        const ref = await db.collection('indivualChats').doc(this.state.chatID).get();
+        const arr = ref.data().messages;
+        for (let i = 0; i < arr.length; i++){
+            messageArr.push(arr[i]);
+        }
+
+        //add a new map
+        messageArr.push(newMessage);
+
+        //push array of maps back to db
+        await db.collection('indivualChats').doc(this.state.chatID).set({
+            messages: messageArr
         });
-        window.alert("completed 2");
 
         this.setState({
             message: '',
@@ -55,7 +69,7 @@ class Message extends React.Component{
                     placeholder='message to send'
                     autoCapitalize='none'
                 />
-                
+
                 <TouchableOpacity style={styles.button} onPress={this.sendMessage}>
                     <Text style={styles.buttonText}>Send Message</Text>
                 </TouchableOpacity>
