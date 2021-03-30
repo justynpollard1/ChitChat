@@ -65,7 +65,7 @@ class Home extends React.Component {
                       .where('name', '>=', startcode)
                       .where('name', '<', endcode).get();
         query.forEach(user => {
-            usersFoundArray.push(user.data().name)
+            usersFoundArray.push([user.data().name, user.data().UID])
                 
         })
         await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
@@ -107,7 +107,7 @@ class Home extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <UserSearchScroll usersFound={this.state.usersFound}/>
+          <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
         </View>
       )
     }

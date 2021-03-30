@@ -19,10 +19,11 @@ export default class UserSearchScroll extends React.Component {
         return(
             <ScrollView>
                 <View>
-                    {this.state.userCardData.map((name) => (
+                    {this.state.userCardData.map((data) => (
                         <UserCard
                         navigation={this.props.navigation}
-                        name={name}/>
+                        name={data[0]}
+                        uid={data[1]}/>
                     ))}
                 </View>
             </ScrollView>

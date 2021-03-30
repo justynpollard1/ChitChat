@@ -34,8 +34,10 @@ class CurrentChatsScroll extends React.Component {
                 const oldData = this.state.roomData
                 const newData = {
                     roomID: room.id,
-                    otherUserName: name,
-                    lastMsg: roomData.messages[0].msg
+                    otherUserName: name
+                }
+                if (roomData.messages[0] != undefined){
+                    newData.lastMsg = roomData.messages[0].msg
                 }
                 oldData.push(newData)
                 this.setState({roomData: oldData})
