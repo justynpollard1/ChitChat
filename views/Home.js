@@ -92,6 +92,7 @@ class Home extends React.Component {
             onSubmitEditing={this.searchForUser}
             onCancel={this.onCancelPressed}
             value={search}
+            autoCapitalize='none'
           />
     )
   }
