@@ -45,7 +45,7 @@ class Message extends React.Component{
         messageArr.push(newMessage);
 
         //push array of maps back to db
-        await db.collection('indivualChats').doc(this.state.chatID).set({
+        await db.collection('indivualChats').doc(this.state.chatID).update({
             messages: messageArr
         });
 
