@@ -1,9 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {db} from '../firebase/Fire';
 import Context from '../contextAPI/context';
 import CurrentChatScroll from '../components/CurrentChatsScroll'
 import { SearchBar } from 'react-native-elements';
+import UserSearchScroll from '../components/userSearch/UserSearchScroll';
+
 
 class Home extends React.Component {
   static contextType = Context
@@ -11,7 +14,8 @@ class Home extends React.Component {
     super(props)
     this.state={
       searchBarShow: false,
-      search: ''
+      search: '',
+      usersFound: []
     }
   }
 
@@ -41,10 +45,30 @@ class Home extends React.Component {
           <Button onPress={() => this.setState({searchBarShow: true})} title="Search"/>
         ),
         headerRight: () => (
-        <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
+          <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
         )
       })
     
+  }
+
+  //gets search text and looks for users in db
+  searchForUser = async() => {
+        const usersFoundArray = []
+        var strSearch = this.state.search;
+        var strlength = strSearch.length;
+        var strFrontCode = strSearch.slice(0, strlength-1);
+        var strEndCode = strSearch.slice(strlength-1, strSearch.length);
+
+        var startcode = strSearch;
+        var endcode= strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
+        const query = await db.collection('users')
+                      .where('name', '>=', startcode)
+                      .where('name', '<', endcode).get();
+        query.forEach(user => {
+            usersFoundArray.push(user.data().name)
+                
+        })
+        await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
   }
 
   //updates search bar text and search state
@@ -65,6 +89,7 @@ class Home extends React.Component {
             platform="ios"
             placeholder="Search for User"
             onChangeText={this.updateSearch}
+            onSubmitEditing={this.searchForUser}
             onCancel={this.onCancelPressed}
             value={search}
           />
@@ -72,11 +97,19 @@ class Home extends React.Component {
   }
 
   render() {
-  return (
-    <View style={styles.container}>
-        <CurrentChatScroll navigation={this.props.navigation}/>
-    </View>
-    );
+    if (this.state.searchBarShow==false) {
+      return (
+        <View style={styles.container}>
+            <CurrentChatScroll navigation={this.props.navigation}/>
+        </View>
+        );
+    } else {
+      return (
+        <View style={styles.container}>
+          <UserSearchScroll usersFound={this.state.usersFound}/>
+        </View>
+      )
+    }
   }
 }
 
