@@ -9,7 +9,7 @@ class Message extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            chatID: "g84iVN3pgrI0czGiTtAA",
+            chatID: this.props.route.params.roomID,
             message: ''
         }
     }
@@ -55,7 +55,7 @@ class Message extends React.Component{
                     placeholder='message to send'
                     autoCapitalize='none'
                 />
-
+                
                 <TouchableOpacity style={styles.button} onPress={this.sendMessage}>
                     <Text style={styles.buttonText}>Send Message</Text>
                 </TouchableOpacity>

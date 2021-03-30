@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {db} from '../firebase/Fire'
 
 
 class ChatRoomCard extends React.Component {

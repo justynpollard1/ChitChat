@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Alert, ScrollView} from 'react-native';
 import {db} from '../../firebase/Fire'
 import MessageCard from './MessageCard'
-import { GiftedChat } from 'react-native-gifted-chat'
 
 
 export default class MessageScroll extends React.Component {

@@ -7,7 +7,7 @@ import Settings from '../views/Settings';
 import Auth from '../views/Auth';
 import Signup from '../views/Signup';
 import Message from '../views/Message';
-import UserSearchBar from '../components/UserSearchBar';
+
 
 const mainStack = createStackNavigator();
 const homeStack = createStackNavigator();
@@ -27,7 +27,7 @@ function MainStack() {
 function HomeStack() {
   return (
   <homeStack.Navigator>
-    <homeStack.Screen name="Home" component={Home} options={{headerTitle: <UserSearchBar/>}}/>
+    <homeStack.Screen name="Home" component={Home}/>
     <homeStack.Screen name="Settings" component={Settings}/>
     <homeStack.Screen name="Message" component={Message}/>
   </homeStack.Navigator>)
