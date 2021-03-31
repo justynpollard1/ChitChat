@@ -51,6 +51,7 @@ export default class MessageScroll extends React.Component {
                         <MessageCard
                         sender={message.sender}
                         message={message.msg}
+                        /*still not perfect, says 1970*/
                         timeSent={(new Date(message.timeSent.seconds)).toUTCString()}/>
                     ))}
                 </View>

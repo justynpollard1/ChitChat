@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import firebase from "firebase";
+import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {auth, db} from "../firebase/Fire";
 import {TextInput} from "react-native-gesture-handler";
@@ -14,26 +15,27 @@ class Message extends React.Component{
         }
     }
 
+
+
+
     sendMessage = async e => {
         e.preventDefault();
-        let date = new Date();
+        let date = firebase.firestore.Timestamp.now();
 
         // add message to the db
         const res = await db.collection('messages').add({
             msg: this.state.message,
-            timeSent: date.getDate()+ "/"+date.getMonth() + "/" + date.getFullYear(),
+            timeSent: date,
             uid: auth.currentUser.uid
         });
-
         const newMessage = {
             mid: res.id,
             msg: this.state.message,
-            timeSent: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
+            timeSent: date,
             uid: auth.currentUser.uid
         }
 
         let messageArr = [];
-
         //get the array of maps from db
         const ref = await db.collection('indivualChats').doc(this.state.chatID).get();
         const arr = ref.data().messages;
@@ -43,21 +45,16 @@ class Message extends React.Component{
 
         //add a new map
         messageArr.push(newMessage);
-
         //push array of maps back to db
         await db.collection('indivualChats').doc(this.state.chatID).update({
             messages: messageArr
         });
-
         this.setState({
             message: '',
         })
-
-
     };
 
     render() {
-
         return (
             <View style={styles.container}>
                 <MessageScroll chatID={this.state.chatID}/>
@@ -72,6 +69,10 @@ class Message extends React.Component{
 
                 <TouchableOpacity style={styles.button} onPress={this.sendMessage}>
                     <Text style={styles.buttonText}>Send Message</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('AddPersonToChat')}>
+                    <Text style={styles.buttonText}>Add Person To Chat</Text>
                 </TouchableOpacity>
 
             </View>

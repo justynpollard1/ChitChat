@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import {db} from '../firebase/Fire';
 import Context from '../contextAPI/context';
 import CurrentChatScroll from '../components/CurrentChatsScroll'

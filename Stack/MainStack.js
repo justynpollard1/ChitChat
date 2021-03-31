@@ -7,6 +7,7 @@ import Settings from '../views/Settings';
 import Auth from '../views/Auth';
 import Signup from '../views/Signup';
 import Message from '../views/Message';
+import AddPersonToChat from "../views/AddPersonToChat";
 
 
 const mainStack = createStackNavigator();
@@ -30,6 +31,7 @@ function HomeStack() {
     <homeStack.Screen name="Home" component={Home}/>
     <homeStack.Screen name="Settings" component={Settings}/>
     <homeStack.Screen name="Message" component={Message}/>
+    <homeStack.Screen name="AddPersonToChat" component={AddPersonToChat}/>
   </homeStack.Navigator>)
 }
 
@@ -37,7 +39,7 @@ function AuthStack() {
   return(
   <authStack.Navigator>
       <authStack.Screen name="Auth" component={Auth}/>
-      <authStack.Screen name="Signup" component={Signup}/> 
+      <authStack.Screen name="Signup" component={Signup}/>
   </authStack.Navigator>)
 }
 
