@@ -7,7 +7,8 @@ import {TextInput} from "react-native-gesture-handler";
 
 class Message extends React.Component{
     constructor(props) {
-        super(props)
+        super(props);
+        this.props = props;
         this.state = {
             chatID: this.props.route.params.roomID,
             message: ''
@@ -37,7 +38,7 @@ class Message extends React.Component{
         let messageArr = [];
         //get the array of maps from db
         const ref = await db.collection('indivualChats').doc(this.state.chatID).get();
-        const arr = ref.data().messages;
+        const arr = ref.data().messageRooms;
         for (let i = 0; i < arr.length; i++){
             messageArr.push(arr[i]);
         }
@@ -51,6 +52,8 @@ class Message extends React.Component{
         this.setState({
             message: '',
         })
+
+        this.props.navigation.navigate('Message', {roomID: this.state.roomID})
     };
 
     render() {
@@ -70,7 +73,7 @@ class Message extends React.Component{
                     <Text style={styles.buttonText}>Send Message</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('AddPersonToChat')}>
+                <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('AddPersonToChat', {roomID: this.state.chatID})}>
                     <Text style={styles.buttonText}>Add Person To Chat</Text>
                 </TouchableOpacity>
 

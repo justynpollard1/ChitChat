@@ -1,15 +1,16 @@
 import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import UserCard from './UserCard';
 import GroupChatUserCard from "./GroupChatUserCard";
+import UserCard from "./UserCard";
 
 
 
 export default class GroupChatScroll extends React.Component {
     constructor(props){
-        super(props)
-        this.state={
-            userCardData: []
+        super(props);
+        this.state= {
+            userCardData: [],
+            roomID: this.props.roomID
         }
     }
     componentDidUpdate(){
@@ -25,7 +26,9 @@ export default class GroupChatScroll extends React.Component {
                         <GroupChatUserCard
                             navigation={this.props.navigation}
                             name={data[0]}
-                            uid={data[1]}/>
+                            uid={data[1]}
+                            roomID ={this.state.roomID}
+                        />
                     ))}
                 </View>
             </ScrollView>

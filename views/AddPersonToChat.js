@@ -1,21 +1,19 @@
 import React from 'react';
-import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {TextInput} from "react-native-gesture-handler";
+import {StyleSheet, View} from 'react-native';
 import Context from "../contextAPI/context";
 import {db} from "../firebase/Fire";
 import {SearchBar} from "react-native-elements";
-import CurrentChatScroll from "../components/CurrentChatsScroll";
-import UserSearchScroll from "../components/userSearch/UserSearchScroll";
 import GroupChatScroll from "../components/userSearch/GroupChatScroll";
 
 class AddPersonToChat extends React.Component{
     static contextType = Context
     constructor(props) {
-        super(props)
+        super(props);
         this.state={
             searchBarShow: false,
             search: '',
-            usersFound: []
+            usersFound: [],
+            roomID: this.props.route.params.roomID
         }
     }
 
@@ -76,7 +74,9 @@ class AddPersonToChat extends React.Component{
             {/* display the search bar */}
             {this.userSearchBar()}
 
-            <GroupChatScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
+            <GroupChatScroll navigation={this.props.navigation}
+                             usersFound={this.state.usersFound}
+                             roomID={this.state.roomID}/>
         </View>
         )
 

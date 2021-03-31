@@ -1,20 +1,72 @@
 import React from 'react';
 import {View, StyleSheet, Dimensions, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { cos } from 'react-native-reanimated';
 import Context from '../../contextAPI/context';
-import { db } from '../../firebase/Fire';
+import {db} from "../../firebase/Fire";
+
 
 
 
 export default class GroupChatUserCard extends React.Component {
     static contextType = Context
-
-    onAddUserPressed = async() => {
-        window.alert("I want to add this person to the chat");
-        window.alert(this.props.uid)// the user I want to add to the chatRoom
-        // window.alert(this.props.route.params.roomID)//maybe the room I am in
+    constructor(props){
+        super(props);
+        this.state={
+            userCardData: [],
+            roomID: this.props.roomID,
+            uid: ''
+        }
     }
+    onAddUserPressed = async() => {
+        // find better way to get the users ID we clicked on
+        const users = db.collection('users');
+        const snapshot = await users.where('name', '==', this.props.name).get();
+        if(snapshot.empty) window.alert("userFound")
+        snapshot.forEach(e => this.setState({
+            uid: e.id,
+        }))
+
+        // update the users chatroom
+        let messageRooms = []
+        const arr = users.doc(this.state.uid).get()
+        for (let i = 0; i < arr.length; i++){
+            messageRooms.push(arr[i]);
+        }
+        messageRooms.push(this.state.roomID);
+
+        await users.doc(this.state.uid).update({
+            messageRooms: messageRooms
+        });
+
+
+
+        // update the chatroom members
+        let idArray = [];
+        //get the array of maps from db
+        const ref = await db.collection('indivualChats').doc(this.state.roomID).get();
+        const arr2 = ref.data().userIDs;
+        for (let i = 0; i < arr2.length; i++){
+            idArray.push(arr2[i]);
+        }
+        idArray.push(this.state.uid);
+
+
+        //push array of maps back to db
+        await db.collection('indivualChats').doc(this.state.roomID).update({
+            userIDs: idArray
+        });
+        this.setState({
+            uid: '',
+        })
+
+
+
+        //add the room to the users messagesRooms
+        this.props.navigation.navigate('Message', {roomID: this.state.roomID})
+    };
+
+
+
 
     render(){
         return(
