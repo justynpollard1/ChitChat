@@ -6,7 +6,6 @@ import {auth, db} from "../firebase/Fire";
 import {TextInput} from "react-native-gesture-handler";
 
 class Message extends React.Component{
-
     constructor(props) {
         super(props)
         this.state = {

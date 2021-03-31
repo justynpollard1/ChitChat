@@ -6,6 +6,7 @@ import {db} from "../firebase/Fire";
 import {SearchBar} from "react-native-elements";
 import CurrentChatScroll from "../components/CurrentChatsScroll";
 import UserSearchScroll from "../components/userSearch/UserSearchScroll";
+import GroupChatScroll from "../components/userSearch/GroupChatScroll";
 
 class AddPersonToChat extends React.Component{
     static contextType = Context
@@ -75,7 +76,7 @@ class AddPersonToChat extends React.Component{
             {/* display the search bar */}
             {this.userSearchBar()}
 
-            <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
+            <GroupChatScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
         </View>
         )
 
