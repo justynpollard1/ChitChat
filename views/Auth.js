@@ -1,65 +1,75 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import {auth, db} from '../firebase/Fire';
 import Context from '../contextAPI/context';
+import { Parse } from "parse/react-native";
 
 class Auth extends React.Component {
-  state ={
-    email: '',
-    password: '',
-  }
+    state ={
+        email: '',
+        password: '',
+    }
 
-  constructor(navigation) {
-    super(navigation)
-  }
+    constructor(navigation) {
+        super(navigation)
+    }
 
-  handleLogin = async () => {
-    const {email, password} = this.state
-    const response = await auth.signInWithEmailAndPassword(email, password)
-    const userData = await db.collection('users').doc(response.user.uid).get()
-    this.context.updateUserData(userData.data())
-    this.props.navigation.replace('HomeStack', {screen: 'Home'})
-  }
+    handleLogin = async () => {
+        const {email, password} = this.state
+        if(email.length === 0 || password.length === 0){
+            window.alert("Username or password cannot be blank");
+        }
+        else {
+            try {
+                await Parse.User.logIn(email.toString(), password.toString());
+                /////// not sure what this does.
+                // this.context.updateUserData(userData.data())
+                this.props.navigation.replace('HomeStack', {screen: 'Home'})
+            }
+            catch (error){
+                window.alert("LoginError " + error.message)
+            }
+        }
+    }
 
-  static contextType = Context;
-  render() {
-    return (
-      <View style={styles.container}>
-            <Text style={styles.text} >Login Screen</Text>
-            <TextInput
-              style={styles.inputBox} 
-              value={this.state.email}
-              onChangeText={email => this.setState({email})}
-              placeholder='Email'
-              autoCapitalize='none'
-            />
-            <TextInput
-              style={styles.inputBox} 
-              value={this.state.password}
-              onChangeText={password => this.setState({password})}
-              placeholder='Password'
-              secureTextEntry={true}
-            />
-            <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+    static contextType = Context;
+    render() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.text} >Login Screen</Text>
+                <TextInput
+                    style={styles.inputBox}
+                    value={this.state.email}
+                    onChangeText={email => this.setState({email})}
+                    placeholder='Email'
+                    autoCapitalize='none'
+                />
+                <TextInput
+                    style={styles.inputBox}
+                    value={this.state.password}
+                    onChangeText={password => this.setState({password})}
+                    placeholder='Password'
+                    secureTextEntry={true}
+                />
+                <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
                     <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <Button title="signup" onPress={() => this.props.navigation.navigate('Signup')}/>
-      </View>
-      );
-  }
-  }
+                </TouchableOpacity>
+                <Button title="signup" onPress={() => this.props.navigation.navigate('Signup')}/>
+            </View>
+        );
+    }
+}
 
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: 'center',
-      backgroundColor: 'white',
+        flex: 1,
+        alignItems: "center",
+        justifyContent: 'center',
+        backgroundColor: 'white',
     },
     text: {
-      fontSize: 50,
-      color: 'blue'
+        fontSize: 50,
+        color: 'blue'
     },
     button: {
         marginTop: 30,
@@ -78,17 +88,17 @@ class Auth extends React.Component {
         color: '#fff'
     },
     inputBox: {
-      width: '85%',
-      margin: 10,
-      padding: 15,
-      fontSize: 16,
-      borderColor: '#d3d3d3',
-      borderBottomWidth: 1,
-      textAlign: 'center'
+        width: '85%',
+        margin: 10,
+        padding: 15,
+        fontSize: 16,
+        borderColor: '#d3d3d3',
+        borderBottomWidth: 1,
+        textAlign: 'center'
     },
     buttonSign: {
-      fontSize: 12
+        fontSize: 12
     }
-  });;
+});;
 
-  export default Auth;
+export default Auth;

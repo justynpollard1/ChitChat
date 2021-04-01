@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
-import {db} from '../firebase/Fire';
 import Context from '../contextAPI/context';
 import CurrentChatScroll from '../components/CurrentChatsScroll'
 import { SearchBar } from 'react-native-elements';
@@ -8,50 +7,50 @@ import UserSearchScroll from '../components/userSearch/UserSearchScroll';
 
 
 class Home extends React.Component {
-  static contextType = Context
-  constructor(props){
-    super(props)
-    this.state={
-      searchBarShow: false,
-      search: '',
-      usersFound: []
+    static contextType = Context
+    constructor(props){
+        super(props)
+        this.state={
+            searchBarShow: false,
+            search: '',
+            usersFound: []
+        }
     }
-  }
 
-  componentDidMount() {
-    if (this.state.searchBarShow === false)this.setLayout();
-    else this.onSearchButtonClicked()
-  }
-  componentDidUpdate() {
-    if (this.state.searchBarShow === false)this.setLayout();
-    else this.onSearchButtonClicked()
-  }
+    componentDidMount() {
+        if (this.state.searchBarShow === false)this.setLayout();
+        else this.onSearchButtonClicked()
+    }
+    componentDidUpdate() {
+        if (this.state.searchBarShow === false)this.setLayout();
+        else this.onSearchButtonClicked()
+    }
 
-  //sets header for when search is clicked
-  onSearchButtonClicked = () => {
-    this.props.navigation.setOptions({
-      headerTitle: () => (
-        this.userSearchBar()
-      ),
-      headerRight: () => (null)
-    })
-  }
+    //sets header for when search is clicked
+    onSearchButtonClicked = () => {
+        this.props.navigation.setOptions({
+            headerTitle: () => (
+                this.userSearchBar()
+            ),
+            headerRight: () => (null)
+        })
+    }
 
-  //sets normal layout of header
-  setLayout() {
-      this.props.navigation.setOptions({
-        headerTitle: () => (
-          <Button onPress={() => this.setState({searchBarShow: true})} title="Search"/>
-        ),
-        headerRight: () => (
-          <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
-        )
-      })
+    //sets normal layout of header
+    setLayout() {
+        this.props.navigation.setOptions({
+            headerTitle: () => (
+                <Button onPress={() => this.setState({searchBarShow: true})} title="Search"/>
+            ),
+            headerRight: () => (
+                <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
+            )
+        })
 
-  }
+    }
 
-  //gets search text and looks for users in db
-  searchForUser = async() => {
+    //gets search text and looks for users in db
+    searchForUser = async() => {
         const usersFoundArray = []
         var strSearch = this.state.search;
         var strlength = strSearch.length;
@@ -61,40 +60,40 @@ class Home extends React.Component {
         var startcode = strSearch;
         var endcode= strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
         const query = await db.collection('users')
-                      .where('name', '>=', startcode)
-                      .where('name', '<', endcode).get();
+            .where('name', '>=', startcode)
+            .where('name', '<', endcode).get();
         query.forEach(user => {
             usersFoundArray.push([user.data().name, user.data().UID])
 
         })
         await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
-  }
+    }
 
-  //updates search bar text and search state
-  updateSearch = search => {
-    this.setState({ search });
-  };
+    //updates search bar text and search state
+    updateSearch = search => {
+        this.setState({ search });
+    };
 
-  //hides search bar and sets search to empty
-  onCancelPressed = () => {
-    this.setState({searchBarShow: false, search: ''})
-  }
+    //hides search bar and sets search to empty
+    onCancelPressed = () => {
+        this.setState({searchBarShow: false, search: ''})
+    }
 
-  //Search bar render
-  userSearchBar() {
-    const {search} = this.state;
-    return (
-      <SearchBar
-            platform="ios"
-            placeholder="Search for User"
-            onChangeText={this.updateSearch}
-            onSubmitEditing={this.searchForUser}
-            onCancel={this.onCancelPressed}
-            value={search}
-            autoCapitalize='none'
-          />
-    )
-  }
+    //Search bar render
+    userSearchBar() {
+        const {search} = this.state;
+        return (
+            <SearchBar
+                platform="ios"
+                placeholder="Search for User"
+                onChangeText={this.updateSearch}
+                onSubmitEditing={this.searchForUser}
+                onCancel={this.onCancelPressed}
+                value={search}
+                autoCapitalize='none'
+            />
+        )
+    }
 
 
     render() {
@@ -117,17 +116,17 @@ class Home extends React.Component {
 
 }
 
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: 'center',
-      backgroundColor: 'white',
+        flex: 1,
+        alignItems: "center",
+        justifyContent: 'center',
+        backgroundColor: 'white',
     },
     text: {
-      fontSize: 50,
-      color: 'blue'
+        fontSize: 50,
+        color: 'blue'
     }
-  });;
+});;
 
-  export default Home;
+export default Home;

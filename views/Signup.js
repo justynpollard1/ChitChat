@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
-import {auth, db} from '../firebase/Fire';
+import {StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+
 import context, {UserDataContext} from '../contextAPI/context';
+import AsyncStorage from '@react-native-community/async-storage';
+import { Parse } from "parse/react-native";
 
 class Signup extends React.Component {
     static contextType = context
@@ -15,19 +17,33 @@ class Signup extends React.Component {
     }
 
     handleSignUp = async () => {
-        const { email, password } = this.state
-        const response = await auth.createUserWithEmailAndPassword(email, password)
+        const {name, email, password } = this.state
+        if (name.trim() === "" || email.trim() === "" || password.trim() === "" ){
+            window.alert("Fields are not properly filled in");
+        }
+        else{
+            try{
+                Parse.User.logOut();
+                let user = new Parse.User();
+                user.set("username", username);
+                user.set("email", email);
+                user.set("password", password);
+                const result = await user.signUp();
+
+                await AsyncStorage.setItem('sessionToken', result.getSessionToken());
+                await AsyncStorage.setItem('username', result.getUsername());
+            }
+            catch{
+
+            }
+        }
         const data = {
             name: this.state.name,
             email: this.state.email,
-            password: this.state.password,
-            uid: response.user.uid
-          }
-          db.collection('users')
-            .doc(response.user.uid)
-            .set(data)
-          this.context.updateUserData(data)
-          this.props.navigation.replace('HomeStack', {screen: 'Home'})
+            password: this.state.password
+        }
+        this.context.updateUserData(data)
+        this.props.navigation.replace('HomeStack', {screen: 'Home'})
     }
 
     render() {
@@ -72,7 +88,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 50,
         color: 'blue'
-      },
+    },
     inputBox: {
         width: '85%',
         margin: 10,

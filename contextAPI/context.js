@@ -5,7 +5,6 @@ export default createContext({
     name: '',
     email: '',
     password: '',
-    UID: ''
   },
   updateUserData: (userData) => {}
 }
