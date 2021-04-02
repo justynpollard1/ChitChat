@@ -24,6 +24,7 @@ class Signup extends React.Component {
             try{
                 Parse.User.logOut();
                 let user = new Parse.User();
+                user.set("name", name);
                 user.set("username", email);
                 user.set("email", email);
                 user.set("password", password);
