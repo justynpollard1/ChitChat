@@ -37,11 +37,14 @@ class Signup extends React.Component {
 
             }
         }
+        const objectId = await Parse.User.current().id;
         const data = {
             name: this.state.name,
             email: this.state.email,
-            password: this.state.password
+            password: this.state.password,
+            UID: objectId
         }
+
         this.context.updateUserData(data)
         this.props.navigation.replace('HomeStack', {screen: 'Home'})
     }

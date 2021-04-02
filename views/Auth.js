@@ -22,15 +22,34 @@ class Auth extends React.Component {
         else {
             try {
                 await Parse.User.logIn(email.toString(), password.toString());
-                /////// not sure what this does.
-                // this.context.updateUserData(userData.data())
+
+                // get the current logged in objectId
+                const objectId = await Parse.User.current().id;
+
+                //query the cloud to get the name the person is assigned
+                const user = Parse.Object.extend("User");
+                const query = new Parse.Query(user);
+                const name = await query.get(objectId);
+                const usersName = name.get('name');
+
+                const userData ={
+                    name: usersName,
+                    email: email,
+                    password: password,
+                    UID: objectId
+                }
+
+                //update the users info and go to the home screen
+                this.context.updateUserData(userData)
                 this.props.navigation.replace('HomeStack', {screen: 'Home'})
             }
             catch (error){
-                window.alert("LoginError " + error.message)
+                window.alert("LoginError: " + error.message)
             }
         }
     }
+
+
 
     static contextType = Context;
     render() {
