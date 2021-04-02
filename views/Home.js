@@ -17,83 +17,87 @@ class Home extends React.Component {
         }
     }
 
-    componentDidMount() {
-        if (this.state.searchBarShow === false)this.setLayout();
-        else this.onSearchButtonClicked()
-    }
-    componentDidUpdate() {
-        if (this.state.searchBarShow === false)this.setLayout();
-        else this.onSearchButtonClicked()
-    }
+    // componentDidMount() {
+    //     if (this.state.searchBarShow === false)this.setLayout();
+    //     else this.onSearchButtonClicked()
+    // }
+    // componentDidUpdate() {
+    //     if (this.state.searchBarShow === false)this.setLayout();
+    //     else this.onSearchButtonClicked()
+    // }
+    //
+    // //sets header for when search is clicked
+    // onSearchButtonClicked = () => {
+    //     this.props.navigation.setOptions({
+    //         headerTitle: () => (
+    //             this.userSearchBar()
+    //         ),
+    //         headerRight: () => (null)
+    //     })
+    // }
 
-    //sets header for when search is clicked
-    onSearchButtonClicked = () => {
-        this.props.navigation.setOptions({
-            headerTitle: () => (
-                this.userSearchBar()
-            ),
-            headerRight: () => (null)
-        })
-    }
+    // //sets normal layout of header
+    // setLayout() {
+    //     this.props.navigation.setOptions({
+    //         headerTitle: () => (
+    //             <Button onPress={() => this.setState({searchBarShow: true})} title="Search"/>
+    //         ),
+    //         headerRight: () => (
+    //             <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
+    //         )
+    //     })
+    //
+    // }
 
-    //sets normal layout of header
-    setLayout() {
-        this.props.navigation.setOptions({
-            headerTitle: () => (
-                <Button onPress={() => this.setState({searchBarShow: true})} title="Search"/>
-            ),
-            headerRight: () => (
-                <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
-            )
-        })
+    // //gets search text and looks for users in db
+    // searchForUser = async() => {
+    //     const usersFoundArray = []
+    //     var strSearch = this.state.search;
+    //     var strlength = strSearch.length;
+    //     var strFrontCode = strSearch.slice(0, strlength-1);
+    //     var strEndCode = strSearch.slice(strlength-1, strSearch.length);
+    //
+    //     var startcode = strSearch;
+    //     var endcode= strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
 
-    }
 
-    //gets search text and looks for users in db
-    searchForUser = async() => {
-        const usersFoundArray = []
-        var strSearch = this.state.search;
-        var strlength = strSearch.length;
-        var strFrontCode = strSearch.slice(0, strlength-1);
-        var strEndCode = strSearch.slice(strlength-1, strSearch.length);
 
-        var startcode = strSearch;
-        var endcode= strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
-        const query = await db.collection('users')
-            .where('name', '>=', startcode)
-            .where('name', '<', endcode).get();
-        query.forEach(user => {
-            usersFoundArray.push([user.data().name, user.data().UID])
 
-        })
-        await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
-    }
-
-    //updates search bar text and search state
-    updateSearch = search => {
-        this.setState({ search });
-    };
-
-    //hides search bar and sets search to empty
-    onCancelPressed = () => {
-        this.setState({searchBarShow: false, search: ''})
-    }
-
-    //Search bar render
-    userSearchBar() {
-        const {search} = this.state;
-        return (
-            <SearchBar
-                platform="ios"
-                placeholder="Search for User"
-                onChangeText={this.updateSearch}
-                onSubmitEditing={this.searchForUser}
-                onCancel={this.onCancelPressed}
-                value={search}
-                autoCapitalize='none'
-            />
-        )
-    }
+        // const query = await db.collection('users')
+        //     .where('name', '>=', startcode)
+        //     .where('name', '<', endcode).get();
+        // query.forEach(user => {
+        //     usersFoundArray.push([user.data().name, user.data().UID])
+        //
+        // })
+    //     await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
+    // }
+    //
+    // //updates search bar text and search state
+    // updateSearch = search => {
+    //     this.setState({ search });
+    // };
+    //
+    // //hides search bar and sets search to empty
+    // onCancelPressed = () => {
+    //     this.setState({searchBarShow: false, search: ''})
+    // }
+    //
+    // //Search bar render
+    // userSearchBar() {
+    //     const {search} = this.state;
+    //     return (
+    //         <SearchBar
+    //             platform="ios"
+    //             placeholder="Search for User"
+    //             onChangeText={this.updateSearch}
+    //             onSubmitEditing={this.searchForUser}
+    //             onCancel={this.onCancelPressed}
+    //             value={search}
+    //             autoCapitalize='none'
+    //         />
+    //     )
+    // }
 
 
     render() {
@@ -102,13 +106,14 @@ class Home extends React.Component {
         if (this.state.searchBarShow===false) {
             return (
                 <View style={styles.container}>
-                    <CurrentChatScroll navigation={this.props.navigation}/>
+                    {/*<CurrentChatScroll navigation={this.props.navigation}/>*/}
+                    <Text> Hello, welcome to the app</Text>
                 </View>
             );
         } else {
             return (
                 <View style={styles.container}>
-                    <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
+                    {/*<UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>*/}
                 </View>
             )
         }

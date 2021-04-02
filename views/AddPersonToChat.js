@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import Context from "../contextAPI/context";
-import {db} from "../firebase/Fire";
 import {SearchBar} from "react-native-elements";
 import GroupChatScroll from "../components/userSearch/GroupChatScroll";
 
