@@ -13,13 +13,13 @@ class CurrentChatsScroll extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.chatObserver();
-    }
-
-    componentWillUnmount() {
-        this.unsub();
-    }
+    // componentDidMount() {
+    //     this.chatObserver();
+    // }
+    //
+    // componentWillUnmount() {
+    //     this.unsub();
+    // }
 
     getSingleUserChatRooms = async() => {
         this.setState({roomData: []})

@@ -118,13 +118,14 @@ class Home extends React.Component {
         if (this.state.searchBarShow===false) {
             return (
                 <View style={styles.container}>
-                    <CurrentChatScroll navigation={this.props.navigation}/>
+                    {/*<CurrentChatScroll navigation={this.props.navigation}/>*/}
+                    <Text> Home Page </Text>
                 </View>
             );
         } else {
             return (
                 <View style={styles.container}>
-                    <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
+                    {/*<UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>*/}
                 </View>
             )
         }
