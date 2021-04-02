@@ -1,8 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage} from 'react-native';
 
 import context, {UserDataContext} from '../contextAPI/context';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Parse } from "parse/react-native";
 
 class Signup extends React.Component {
@@ -25,7 +24,7 @@ class Signup extends React.Component {
             try{
                 Parse.User.logOut();
                 let user = new Parse.User();
-                user.set("username", username);
+                user.set("username", email);
                 user.set("email", email);
                 user.set("password", password);
                 const result = await user.signUp();

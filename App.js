@@ -1,8 +1,7 @@
 import MainStack from './Stack/MainStack'
 import GlobalState from './contextAPI/globalState'
 import React, {useEffect} from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import { Platform, StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import keys from './parse/Parse';
 import Parse from "parse/react-native.js";
 
