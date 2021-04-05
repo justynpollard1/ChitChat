@@ -119,13 +119,13 @@ class Home extends React.Component {
             return (
                 <View style={styles.container}>
                     {/*<CurrentChatScroll navigation={this.props.navigation}/>*/}
-                    <Text> Home Page </Text>
+                    {/*<Text> Home Page </Text>*/}
                 </View>
             );
         } else {
             return (
                 <View style={styles.container}>
-                    {/*<UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>*/}
+                    <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
                 </View>
             )
         }

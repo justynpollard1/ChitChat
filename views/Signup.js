@@ -22,29 +22,35 @@ class Signup extends React.Component {
         }
         else{
             try{
+                //make sure we are starting fresh
                 Parse.User.logOut();
+
+                //create a new user, setting the fields
                 let user = new Parse.User();
                 user.set("name", name);
                 user.set("username", email);
                 user.set("email", email);
                 user.set("password", password);
+
+                //save the new user in teh cloud
                 const result = await user.signUp();
 
                 await AsyncStorage.setItem('sessionToken', result.getSessionToken());
                 await AsyncStorage.setItem('username', result.getUsername());
             }
             catch{
-
+                window.alert("oops, something when wrong with the signup")
             }
         }
-        const objectId = await Parse.User.current().id;
+        // save the new users data for the rest of the program
         const data = {
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
-            UID: objectId
+            UID: await Parse.User.current().id
         }
 
+        //update and switch to the home screen
         this.context.updateUserData(data)
         this.props.navigation.replace('HomeStack', {screen: 'Home'})
     }

@@ -2,7 +2,6 @@
 // import {View, StyleSheet, Dimensions, Text} from 'react-native';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 // import Context from '../../contextAPI/context';
-// import {db} from "../../firebase/Fire";
 //
 //
 //

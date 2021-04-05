@@ -21,6 +21,7 @@ class Auth extends React.Component {
         }
         else {
             try {
+                //log in the user using the given method from parse
                 await Parse.User.logIn(email.toString(), password.toString());
 
                 // get the current logged in objectId
@@ -29,9 +30,10 @@ class Auth extends React.Component {
                 //query the cloud to get the name the person is assigned
                 const user = Parse.Object.extend("User");
                 const query = new Parse.Query(user);
-                const name = await query.get(objectId);
-                const usersName = name.get('name');
+                const queryResult = await query.get(objectId);
+                const usersName = queryResult.get('name');
 
+                //create a new userdata JSON with the info from the cloud
                 const userData ={
                     name: usersName,
                     email: email,
@@ -56,6 +58,8 @@ class Auth extends React.Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.text} >Login Screen</Text>
+
+                {/* email text input for sign in */}
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.email}
@@ -63,6 +67,8 @@ class Auth extends React.Component {
                     placeholder='Email'
                     autoCapitalize='none'
                 />
+
+                {/* password text input for sign in */}
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.password}
@@ -70,9 +76,13 @@ class Auth extends React.Component {
                     placeholder='Password'
                     secureTextEntry={true}
                 />
+
+                {/*Button to log in*/}
                 <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
+
+                {/*Button to Sign up*/}
                 <Button title="signup" onPress={() => this.props.navigation.navigate('Signup')}/>
             </View>
         );
