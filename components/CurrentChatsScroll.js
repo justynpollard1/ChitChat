@@ -34,48 +34,58 @@ class CurrentChatsScroll extends React.Component {
         const userQueryResult = await userQuery.get(userID);
         const arrayChatRoomIDs = userQueryResult.get('ChatRooms');
 
-        //this should go inside the snapshot -----------------------------------------------------------
+        //---------------------   this should Maybe go go inside the snapshot --------------------------------
         const chatRoomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
 
+        let otherUsersNames = []
         //go through the array of chatroomIDs assigned to the user, get the other user from the chatroom who arent current user
         for(let i=0; i < arrayChatRoomIDs.length(); i++){
             let chatRoomQueryResult = await chatRoomQuery.get(arrayChatRoomIDs[i]);
             let userIdArray = chatRoomQueryResult.get('uid').filter(uid => uid !== userID);
 
-            //create an array of names of the other users
-            let otherUsersNames = []
+            //create an array of names of the other users names
             for(let i=0;i < userIdArray; i++){
                 let otherUserQueryResult = await userQuery.get(otherUserID);
                 otherUsersNames.push(otherUsersNames.get('name'));
             }
         }
-        //-------------------------------------------------------------------------------------------------
+
         // const roomSnapshots = roomRef.where('userIDs', "array-contains", this.context.userData.uid)
-        const roomSnapshots = "";
-        await roomSnapshots.get().then( async (snapshot) => {
-            snapshot.forEach(async (room) => {
+        const oldData = this.state.roomData
 
-                // const roomData = room.data()
-                // const otherUserID = (roomData.userIDs.filter(uid => uid !== this.context.userData.uid))[0]
-                // const name = (await db.collection('users').doc(otherUserID).get()).data().name
+        const newData = {
+            roomID: room.id,
+            otherUserName: otherUsersNames.toString()
+        }
+
+        if (roomData.messages[0] !== undefined){
+            newData.lastMsg = roomData.messages[0].msg
+        }
+
+        oldData.push(newData)
+
+        this.setState({roomData: oldData})
+        //^^^^^^^^^^^^^^^^^^^^^^^ this should Maybe go go inside the snapshot ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-                const oldData = this.state.roomData
-
-                const newData = {
-                    roomID: room.id,
-                    otherUserName: name
-                }
-
-                if (roomData.messages[0] !== undefined){
-                    newData.lastMsg = roomData.messages[0].msg
-                }
-
-                oldData.push(newData)
-
-                this.setState({roomData: oldData})
-            })
-        })
+        // const roomSnapshots = "";
+        // await roomSnapshots.get().then( async (snapshot) => {
+        //     snapshot.forEach(async (room) => {
+        //         // const roomData = room.data()
+        //         // const otherUserID = (roomData.userIDs.filter(uid => uid !== this.context.userData.uid))[0]
+        //         // const name = (await db.collection('users').doc(otherUserID).get()).data().name
+        //         const oldData = this.state.roomData
+        //         const newData = {
+        //             roomID: room.id,
+        //             otherUserName: name
+        //         }
+        //         if (roomData.messages[0] !== undefined){
+        //             newData.lastMsg = roomData.messages[0].msg
+        //         }
+        //         oldData.push(newData)
+        //         this.setState({roomData: oldData})
+        //     })
+        // })
     }
 
     chatObserver = () => {
