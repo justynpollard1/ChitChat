@@ -35,7 +35,9 @@ export default class UserCard extends React.Component {
             const data = otherUserData.messageRooms
             data.push(result.id)
             await otherUserRef.update({messageRooms: data})
-        } else {
+        }
+
+        else {
             await otherUserRef.update({messageRooms: [result.id]})
         }
 

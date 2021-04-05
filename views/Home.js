@@ -119,7 +119,6 @@ class Home extends React.Component {
             return (
                 <View style={styles.container}>
                     {/*<CurrentChatScroll navigation={this.props.navigation}/>*/}
-                    {/*<Text> Home Page </Text>*/}
                 </View>
             );
         } else {
