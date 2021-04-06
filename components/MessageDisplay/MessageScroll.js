@@ -64,8 +64,8 @@ export default class MessageScroll extends Component {
     /*Subscribe to the ChatRooms, it will ping on any chatroom being changed,
     haven't figured otu how to subscribe to a single object*/
     messageObserver = () => {
-        var subscription = this.state.queryClient.subscribe(this.state.liveQuery);
-        this.unsub = subscription.on('update', (object) =>{
+        let subscription = this.state.queryClient.subscribe(this.state.liveQuery);
+        subscription.on('update', (object) =>{
             if(object.id === this.state.roomID){
                 this.getMessages(this.state.roomID);
             }

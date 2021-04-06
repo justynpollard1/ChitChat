@@ -101,7 +101,7 @@ class Home extends React.Component {
         if (this.state.searchBarShow===false) {
             return (
                 <View style={styles.container}>
-                    {/*<CurrentChatScroll navigation={this.props.navigation}/>*/}
+                    <CurrentChatScroll navigation={this.props.navigation}/>
                 </View>
             );
         } else {

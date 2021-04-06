@@ -10,91 +10,86 @@ class CurrentChatsScroll extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            roomData: []
+            roomData: [],
+            queryClient: "",
+            liveQuery: "",
         }
+        let liveQueryClient = new Parse.LiveQueryClient({
+            applicationId: 'kYSoaP9C7d9JujPHMbZ4AIhtBTmmDIevX42cMQG6',
+            serverURL: 'wss://' + 'chitchat.b4a.io',
+            javascriptKey: 'V1eJ6EjksQ6B95OJzOjTQBu0BNFjJIVw2YSkp9BS'
+        });
+        liveQueryClient.open();
+        this.state.queryClient = liveQueryClient;
+        this.state.liveQuery = new Parse.Query("ChatRooms");
     }
 
     componentDidMount() {
+        this.getSingleUserChatRooms();
         this.chatObserver();
     }
 
     componentWillUnmount() {
-        this.unsub();
+        this.state.queryClient.unsubscribe(this.state.liveQuery);
+        this.getSingleUserChatRooms();
     }
 
     getSingleUserChatRooms = async() => {
+        //reset the variable
         this.setState({roomData: []})
-
+        const oldData = this.state.roomData
 
         // get the current logged in objectId
-        const userID = await Parse.User.current().id;
+        const currentUserID = await Parse.User.current().id;
 
         //query the cloud and get the array of all ChatRooms the user has
         const userQuery = new Parse.Query(Parse.Object.extend("User"));
-        const userQueryResult = await userQuery.get(userID);
+        const userQueryResult = await userQuery.get(currentUserID);
         const arrayChatRoomIDs = userQueryResult.get('ChatRooms');
 
-        //---------------------   this should Maybe go go inside the snapshot --------------------------------
-        const chatRoomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
 
-        let otherUsersNames = []
+
         //go through the array of chatroomIDs assigned to the user, get the other user from the chatroom who arent current user
-        for(let i=0; i < arrayChatRoomIDs.length(); i++){
+        let arrayLength = arrayChatRoomIDs.length;
+        for(let i=0; i < arrayLength; i++){
+            let otherUsersNames = []
+            let chatRoomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
             let chatRoomQueryResult = await chatRoomQuery.get(arrayChatRoomIDs[i]);
-            let userIdArray = chatRoomQueryResult.get('uid').filter(uid => uid !== userID);
+            let userIdArray = chatRoomQueryResult.get('users').filter(uid => uid !== currentUserID);
+            let messagesFromChatRoom = chatRoomQueryResult.get('messages');
 
             //create an array of names of the other users names
-            for(let i=0;i < userIdArray; i++){
-                let otherUserQueryResult = await userQuery.get(otherUserID);
-                otherUsersNames.push(otherUserQueryResult.get('name'));
+            let userIDArrayLength = userIdArray.length;
+            for(let i=0;i < userIDArrayLength; i++){
+                //only get the names that are defined
+                if(userIdArray[i] !== undefined) {
+                    let otherUserQueryResult = await userQuery.get(userIdArray[i]);
+                    otherUsersNames.push(otherUserQueryResult.get('name'));
+                }
             }
+
+            if(otherUsersNames.length > 0){
+                const newData = {
+                    roomID: arrayChatRoomIDs[i],
+                    otherUserName: otherUsersNames.toString(),
+                }
+                if(messagesFromChatRoom.length > 0) {
+                    newData.lastMsg = messagesFromChatRoom[messagesFromChatRoom.length - 1].msg
+                }
+                oldData.push(newData)
+            }
+
         }
-
-        // const roomSnapshots = roomRef.where('userIDs', "array-contains", this.context.userData.uid)
-        const oldData = this.state.roomData
-
-        const newData = {
-            roomID: room.id,
-            otherUserName: otherUsersNames.toString()
-        }
-
-        if (roomData.messages[0] !== undefined){
-            newData.lastMsg = roomData.messages[0].msg
-        }
-
-        oldData.push(newData)
-
         this.setState({roomData: oldData})
-        //^^^^^^^^^^^^^^^^^^^^^^^ this should Maybe go go inside the snapshot ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-        // const roomSnapshots = "";
-        // await roomSnapshots.get().then( async (snapshot) => {
-        //     snapshot.forEach(async (room) => {
-        //         // const roomData = room.data()
-        //         // const otherUserID = (roomData.userIDs.filter(uid => uid !== this.context.userData.uid))[0]
-        //         // const name = (await db.collection('users').doc(otherUserID).get()).data().name
-        //         const oldData = this.state.roomData
-        //         const newData = {
-        //             roomID: room.id,
-        //             otherUserName: name
-        //         }
-        //         if (roomData.messages[0] !== undefined){
-        //             newData.lastMsg = roomData.messages[0].msg
-        //         }
-        //         oldData.push(newData)
-        //         this.setState({roomData: oldData})
-        //     })
-        // })
     }
+    
+
 
     chatObserver = () => {
-        //get all the chatrooms that have my userID in them
-        // const query = db.collection('indivualChats').where('userIDs', "array-contains", this.context.userData.uid)
-        // this.unsub = query.onSnapshot(() => {
-        //         this.getSingleUserChatRooms()
-        // })
-        this.getSingleUserChatRooms();
+        let subscription = this.state.queryClient.subscribe(this.state.liveQuery);
+        subscription.on('update', (object) =>{
+            this.getSingleUserChatRooms();
+        })
     }
 
 
