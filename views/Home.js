@@ -51,37 +51,20 @@ class Home extends React.Component {
 
     //gets search text and looks for users in db
     searchForUser = async() => {
-        window.alert("searchForUserCalled");
         const usersFoundArray = []
-        var strSearch = this.state.search;
-        var strlength = strSearch.length;
-        var strFrontCode = strSearch.slice(0, strlength-1);
-        var strEndCode = strSearch.slice(strlength-1, strSearch.length);
 
-        var startcode = strSearch;
-        var endcode= strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
+        //get all users from the cloud
+        let allUserQuery = new Parse.Query(Parse.Object.extend("User"));
+        let allUserQueryResult = await allUserQuery.find();
 
-        Window.alert("a");
-        let User = Parse.Object.extend("User");
-        let query = new Parse.Query(User);
-        query.greaterOrEq('name',startcode);
-        query.lessThan('name', endcode);
-        Window.alert("b");
-        let result = query.find();
-        window.alert(JSON.stringify(result));
-        for (let i = 0; i < result.length(); i++){
-            window.alert(result[i].name + " " + result[i].objectId);
-            usersFoundArray.push([result[i].name, result[i].objectId]);
-        }
+        //get all the users that match the search criteria
+        allUserQueryResult.map(x => {
+            if (x.get('name').includes(this.state.search)) {
+                usersFoundArray.push([x.get('name'), x.get('uid')])
+            }
+        });
 
-        /////////////////////////////////////////// OLD Query //////////////////////////////////////////
-        // const query = await db.collection('users')
-        //     .where('name', '>=', startcode)
-        //     .where('name', '<', endcode).get();
-        // query.forEach(user => {
-        //     usersFoundArray.push([user.data().name, user.data().UID])
-        //
-        // })
+
         await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
     }
 
