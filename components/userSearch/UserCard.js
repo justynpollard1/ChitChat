@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Dimensions, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { cos } from 'react-native-reanimated';
 import Context from '../../contextAPI/context';
 import { Parse } from "parse/react-native";
 
@@ -12,47 +11,45 @@ export default class UserCard extends React.Component {
 
     onNewUserPressed = async() => {
         let currentUserID = await Parse.User.current().id;
-        let userClickedOn = this.props.uid;
-        const data = {
-            messages: [],
-            userIDs: [currentUserID, userClickedOn]
-        }
+        let userClickedOnID = this.props.uid;
 
         //create new chatroom and save my userName + the clicked on persons username
         const ChatRoom = Parse.Object.extend("ChatRooms");
         const chatRoom = new ChatRoom();
-        chatRoom.set('users', [[currentUserID, userClickedOn]])
+        chatRoom.set('users', [currentUserID, userClickedOnID])
         const result = await chatRoom.save();
 
         const chatRoomID = result.id;
-        //add message room to my user
 
-        //add message room to the new user
 
-        // const selfRef = db.collection('users').doc(this.context.userData.uid)
-        // const selfData = (await selfRef.get()).data()
-        // if('messageRooms' in selfData) {
-        //     const data = selfData.messageRooms
-        //     data.push(result.id)
-        //     await selfRef.update({messageRooms: data})
-        // } else {
-        //     await selfRef.update({messageRooms: [result.id]})
-        // }
-        //
-        //
-        // const otherUserRef = db.collection('users').doc(this.props.uid)
-        // const otherUserData = (await otherUserRef.get()).data()
-        // if('messageRooms' in otherUserData){
-        //     const data = otherUserData.messageRooms
-        //     data.push(result.id)
-        //     await otherUserRef.update({messageRooms: data})
-        // }
-        //
-        // else {
-        //     await otherUserRef.update({messageRooms: [result.id]})
-        // }
-        //
-        // this.props.navigation.navigate('Message', {roomID: result.id})
+        const user = Parse.Object.extend("User");
+        const query = new Parse.Query(user);
+
+        //add ChatRoom ID to the current user
+        await query.get(currentUserID).then(user => {
+            let chatRoomArray = user.get('ChatRooms');
+            //create an array if it doesn't exist
+            if(chatRoomArray === undefined){
+                chatRoomArray = []
+            }
+            chatRoomArray.push(chatRoomID);
+            user.set('ChatRooms', chatRoomArray);
+            user.save();
+        })
+
+        //add message room to the user Clicked on
+        await query.get(userClickedOnID).then(user => {
+            let chatRoomArray = user.get('ChatRooms');
+            //create an array if it doesn't exist
+            if(chatRoomArray === undefined){
+                chatRoomArray = []
+            }
+            chatRoomArray.push(chatRoomID);
+            user.set('ChatRooms', chatRoomArray);
+            user.save();
+        })
+
+        this.props.navigation.navigate('Message', {roomID: chatRoomID})
     }
 
     render(){
