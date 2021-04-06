@@ -31,7 +31,6 @@ class Signup extends React.Component {
                 user.set("username", email);
                 user.set("email", email);
                 user.set("password", password);
-
                 //save the new user in teh cloud
                 const result = await user.signUp();
 
@@ -42,12 +41,21 @@ class Signup extends React.Component {
                 window.alert("oops, something when wrong with the signup")
             }
         }
+        //add the uid to the assigned user
+        let userId = await Parse.User.current().id;
+        let User = Parse.Object.extend('User');
+        let query = new Parse.Query(User);
+        await query.get(userId).then(user => {
+            user.set('uid', userId);
+            user.save();
+        })
+
         // save the new users data for the rest of the program
         const data = {
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
-            UID: await Parse.User.current().id
+            UID: userId
         }
 
         //update and switch to the home screen
