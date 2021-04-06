@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {TextInput} from "react-native-gesture-handler";
+import {Parse} from "parse/react-native";
 
 class Message extends React.Component{
     constructor(props) {
@@ -18,14 +19,24 @@ class Message extends React.Component{
 
     sendMessage = async e => {
         e.preventDefault();
-        let date = new Date.now().toTimestamp();
+        // let date = new Date.now().toTimestamp();
+        let currentUserID = await Parse.User.current().id;
+
+        // const newMessageObject = {
+        //     msg: this.state.message,
+        //     timeSent: date,
+        //     uid: currentUserID
+        // }
 
         // add message to the db
-        const res = await db.collection('messages').add({
-            msg: this.state.message,
-            timeSent: date,
-            uid: auth.currentUser.uid
-        });
+        const Messages = Parse.Object.extend("messages");
+        const messages = new Messages();
+        messages.set('uid', currentUserID);
+        messages.set('msg', this.state.message);
+        const result = await messages.save();
+
+        window.alert(result.id);
+        // console.log(result.createdAt);
 
 
         const newMessage = {

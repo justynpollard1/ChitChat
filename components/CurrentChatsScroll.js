@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Alert, ScrollView} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import Context from '../contextAPI/context';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ChatRoomCard from './ChatRoomCard';
@@ -46,7 +46,7 @@ class CurrentChatsScroll extends React.Component {
             //create an array of names of the other users names
             for(let i=0;i < userIdArray; i++){
                 let otherUserQueryResult = await userQuery.get(otherUserID);
-                otherUsersNames.push(otherUsersNames.get('name'));
+                otherUsersNames.push(otherUserQueryResult.get('name'));
             }
         }
 

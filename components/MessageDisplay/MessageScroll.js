@@ -18,9 +18,9 @@ export default class MessageScroll extends Component {
         this.messageObserver();
     }
 
-    // componentWillUnmount(){
-    //     this.unsub();
-    // }
+    componentWillUnmount(){
+        this.unsub();
+    }
 
     getMessages = async (chatID) => {
         //get the messages from the chatroom we got called with
@@ -49,6 +49,8 @@ export default class MessageScroll extends Component {
         this.setState({messages: messageArray})
     }
 
+    /*Subscribe to the ChatRooms, it will ping on any chatroom being changed,
+    haven't figured otu how to subscribe to a single object*/
     messageObserver = () => {
         let liveQueryClient = new Parse.LiveQueryClient({
             applicationId: 'kYSoaP9C7d9JujPHMbZ4AIhtBTmmDIevX42cMQG6',
