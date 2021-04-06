@@ -26,6 +26,7 @@ export default class MessageScroll extends Component {
 
     //
     componentDidMount() {
+        this.getMessages(this.state.roomID);
         this.messageObserver();
     }
 

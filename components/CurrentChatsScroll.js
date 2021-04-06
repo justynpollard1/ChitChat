@@ -82,7 +82,7 @@ class CurrentChatsScroll extends React.Component {
         }
         this.setState({roomData: oldData})
     }
-    
+
 
 
     chatObserver = () => {
