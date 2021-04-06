@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import { StyleSheet, Text, View, Button, Alert, ScrollView} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import MessageCard from './MessageCard'
 import {Parse} from "parse/react-native";
 
@@ -10,16 +10,28 @@ export default class MessageScroll extends Component {
         super(props)
         this.state= {
             roomID: this.props.chatID,
-            messages: []
+            messages: [],
+            queryClient: "",
+            liveQuery: "",
         }
+        let liveQueryClient = new Parse.LiveQueryClient({
+            applicationId: 'kYSoaP9C7d9JujPHMbZ4AIhtBTmmDIevX42cMQG6',
+            serverURL: 'wss://' + 'chitchat.b4a.io',
+            javascriptKey: 'V1eJ6EjksQ6B95OJzOjTQBu0BNFjJIVw2YSkp9BS'
+        });
+        liveQueryClient.open();
+        this.state.queryClient = liveQueryClient;
+        this.state.liveQuery = new Parse.Query("ChatRooms");
     }
+
     //
     componentDidMount() {
         this.messageObserver();
     }
 
     componentWillUnmount(){
-        this.unsub();
+        this.state.queryClient.unsubscribe(this.state.liveQuery);
+        this.messageObserver();
     }
 
     getMessages = async (chatID) => {
@@ -52,16 +64,8 @@ export default class MessageScroll extends Component {
     /*Subscribe to the ChatRooms, it will ping on any chatroom being changed,
     haven't figured otu how to subscribe to a single object*/
     messageObserver = () => {
-        let liveQueryClient = new Parse.LiveQueryClient({
-            applicationId: 'kYSoaP9C7d9JujPHMbZ4AIhtBTmmDIevX42cMQG6',
-            serverURL: 'wss://' + 'chitchat.b4a.io',
-            javascriptKey: 'V1eJ6EjksQ6B95OJzOjTQBu0BNFjJIVw2YSkp9BS'
-        });
-        liveQueryClient.open();
-
-        let query = new Parse.Query("ChatRooms");
-        var subscription = liveQueryClient.subscribe(query);
-        subscription.on('update', (object) =>{
+        var subscription = this.state.queryClient.subscribe(this.state.liveQuery);
+        this.unsub = subscription.on('update', (object) =>{
             if(object.id === this.state.roomID){
                 this.getMessages(this.state.roomID);
             }

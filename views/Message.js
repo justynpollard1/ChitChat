@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {TextInput} from "react-native-gesture-handler";
 import {Parse} from "parse/react-native";
+import win from "react-native-web/dist/exports/Dimensions";
 
 class Message extends React.Component{
     constructor(props) {
@@ -14,19 +15,9 @@ class Message extends React.Component{
         }
     }
 
-
-
-
     sendMessage = async e => {
         e.preventDefault();
-        // let date = new Date.now().toTimestamp();
         let currentUserID = await Parse.User.current().id;
-
-        // const newMessageObject = {
-        //     msg: this.state.message,
-        //     timeSent: date,
-        //     uid: currentUserID
-        // }
 
         // add message to the db
         const Messages = Parse.Object.extend("messages");
@@ -34,36 +25,38 @@ class Message extends React.Component{
         messages.set('uid', currentUserID);
         messages.set('msg', this.state.message);
         const result = await messages.save();
-
-        window.alert(result.id);
-        // console.log(result.createdAt);
+        const messageID = result.id;
 
 
+        //get the timestamp from the created message
+        const query = new Parse.Query(Messages);
+        const queryResult = await query.get(messageID);
+        const timestamp = queryResult.get('createdAt');
+
+        //create message to send to chat
         const newMessage = {
-            mid: res.id,
+            mid: messageID,
             msg: this.state.message,
-            timeSent: date,
-            uid: auth.currentUser.uid
+            timeSent: timestamp,
+            uid: currentUserID
         }
 
-        let messageArr = [];
-        //get the array of maps from db
-        const ref = await db.collection('indivualChats').doc(this.state.chatID).get();
-        const arr = ref.data().messageRooms;
-        for (let i = 0; i < arr.length; i++){
-            messageArr.push(arr[i]);
-        }
+        //query the cloud, add the message and save it
+        const chatRoomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
+        await chatRoomQuery.get(this.state.chatID).then( room => {
+            let messageArray = room.get('messages');
+            if(messageArray === undefined){
+                messageArray = [];
+            }
+            messageArray.push(newMessage);
+            room.set('messages', messageArray);
+            room.save();
+        })
 
-        //add a new map
-        messageArr.push(newMessage);
-        //push array of maps back to db
-        await db.collection('indivualChats').doc(this.state.chatID).update({
-            messages: messageArr
-        });
+        //reset the state
         this.setState({
             message: '',
         })
-
         this.props.navigation.navigate('Message', {roomID: this.state.roomID})
     };
 
