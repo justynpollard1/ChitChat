@@ -1,42 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
+
 import { StyleSheet, Text, View, Button, Alert, ScrollView} from 'react-native';
 import MessageCard from './MessageCard'
 import {Parse} from "parse/react-native";
 
 
-export default class MessageScroll extends React.Component {
+export default class MessageScroll extends Component {
     constructor(props){
         super(props)
         this.state= {
-            chatID: this.props.chatID,
+            roomID: this.props.chatID,
             messages: []
         }
     }
-
+    //
     componentDidMount() {
         this.messageObserver();
     }
 
-    componentWillUnmount(){
-        this.unsub();
-    }
+    // componentWillUnmount(){
+    //     this.unsub();
+    // }
 
     getMessages = async (chatID) => {
-        //uncomment when ready to query the cloud
-        // const query = new Parse.Query(Parse.Object.extend("ChatRooms"));
-        // const queryResult = await query.get(chatID);
-        // const messages = queryResult.get('messages');
+        //get the messages from the chatroom we got called with
+        const chatRoomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
+        const chatRoomQueryResult = await chatRoomQuery.get(chatID);
+        const messages = chatRoomQueryResult.get('messages');
 
-        //try using hard data before querying the cloud
-        const messages = [
-            {"mid":"sPKWcxAbFi","msg":"This is a test","timeSent":"time","uid":"wiODwjYCBK"},
-            {"mid":"sPKWcxAbFi","msg":"This is a test","timeSent":"time","uid":"wiODwjYCBK"}
-            ]
-
+        // create our own array of objects from the response
         const messageArray = []
         for (let i = 0; i < messages.length; i++) {
-
-            //query to get the users name from the cloud
+            //query to get the users name from the cloud that sent the message
             const query = new Parse.Query(Parse.Object.extend("User"));
             const queryResult = await query.get(messages[i].uid);
             const name = queryResult.get('name');
@@ -45,20 +40,30 @@ export default class MessageScroll extends React.Component {
             const messageInfo = {
                 sender: name,
                 msg: messages[i].msg,
-                timeSent: messagesDoc[i].timeSent
+                timeSent: messages[i].timeSent
             }
             messageArray.push(messageInfo)
+
           }
-        //update
+
         this.setState({messages: messageArray})
     }
 
     messageObserver = () => {
-        this.getMessages(this.state.chatID);
-        // const messagesRef = db.collection('indivualChats').doc(this.state.chatID)
-        // this.unsub = messagesRef.onSnapshot(() => {
-        //     this.getMessages(this.state.chatID)
-        // })
+        let liveQueryClient = new Parse.LiveQueryClient({
+            applicationId: 'kYSoaP9C7d9JujPHMbZ4AIhtBTmmDIevX42cMQG6',
+            serverURL: 'wss://' + 'chitchat.b4a.io',
+            javascriptKey: 'V1eJ6EjksQ6B95OJzOjTQBu0BNFjJIVw2YSkp9BS'
+        });
+        liveQueryClient.open();
+
+        let query = new Parse.Query("ChatRooms");
+        var subscription = liveQueryClient.subscribe(query);
+        subscription.on('update', (object) =>{
+            if(object.id === this.state.roomID){
+                this.getMessages(this.state.roomID);
+            }
+        })
     }
 
     render(){

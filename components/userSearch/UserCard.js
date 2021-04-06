@@ -48,7 +48,7 @@ export default class UserCard extends React.Component {
             user.set('ChatRooms', chatRoomArray);
             user.save();
         })
-
+        window.alert(chatRoomID);
         this.props.navigation.navigate('Message', {roomID: chatRoomID})
     }
 

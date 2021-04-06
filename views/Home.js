@@ -52,14 +52,14 @@ class Home extends React.Component {
     //gets search text and looks for users in db
     searchForUser = async() => {
         const usersFoundArray = []
-
+        const currentUserId = await Parse.User.current().id;
         //get all users from the cloud
         let allUserQuery = new Parse.Query(Parse.Object.extend("User"));
         let allUserQueryResult = await allUserQuery.find();
 
         //get all the users that match the search criteria
         allUserQueryResult.map(x => {
-            if (x.get('name').includes(this.state.search)) {
+            if (x.get('name').includes(this.state.search) && x.get('uid') !== currentUserId) {
                 usersFoundArray.push([x.get('name'), x.get('uid')])
             }
         });
