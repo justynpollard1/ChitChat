@@ -38,7 +38,7 @@ class Message extends React.Component{
         let messageArr = [];
         //get the array of maps from db
         const ref = await db.collection('indivualChats').doc(this.state.chatID).get();
-        const arr = ref.data().messageRooms;
+        const arr = ref.data().messages;
         for (let i = 0; i < arr.length; i++){
             messageArr.push(arr[i]);
         }

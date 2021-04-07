@@ -15,8 +15,9 @@ export default class UserCard extends React.Component {
             messages: [],
             userIDs: [this.context.userData.uid, this.props.uid]
         }
+        console.log(data);
         const result = await db.collection('indivualChats').add(data)
-
+        
         const selfRef = db.collection('users').doc(this.context.userData.uid)
         const selfData = (await selfRef.get()).data()
         if('messageRooms' in selfData) {

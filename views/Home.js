@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
 import {db} from '../firebase/Fire';
 import Context from '../contextAPI/context';
-import CurrentChatScroll from '../components/CurrentChatsScroll'
+import CurrentChatsScroll from '../components/CurrentChatsScroll'
 import { SearchBar } from 'react-native-elements';
 import UserSearchScroll from '../components/userSearch/UserSearchScroll';
 
@@ -64,7 +64,7 @@ class Home extends React.Component {
                       .where('name', '>=', startcode)
                       .where('name', '<', endcode).get();
         query.forEach(user => {
-            usersFoundArray.push([user.data().name, user.data().UID])
+            usersFoundArray.push([user.data().name, user.data().uid])
 
         })
         await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
@@ -103,7 +103,7 @@ class Home extends React.Component {
         if (this.state.searchBarShow===false) {
             return (
                 <View style={styles.container}>
-                    <CurrentChatScroll navigation={this.props.navigation}/>
+                    <CurrentChatsScroll navigation={this.props.navigation}/>
                 </View>
             );
         } else {
