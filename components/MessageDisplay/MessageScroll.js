@@ -24,7 +24,7 @@ export default class MessageScroll extends React.Component {
     getMessages = async (chatID) => {
         const messagesRef = await db.collection('indivualChats').doc(chatID).get()
         const messagesDoc = messagesRef.data().messages
-        const messageArray = [] 
+        const messageArray = []
         for (var i = 0; i < messagesDoc.length; i++) {
             const messageInfo = {
                 sender: (await db.collection('users').doc(messagesDoc[i].uid).get()).data().name,
@@ -48,10 +48,11 @@ export default class MessageScroll extends React.Component {
             <ScrollView>
                 <View>
                     {this.state.messages.map((message) => (
-                        <MessageCard 
-                        sender={message.sender} 
-                        message={message.msg} 
-                        timeSent={"1pm"}/>
+                        <MessageCard
+                        sender={message.sender}
+                        message={message.msg}
+                        /*still not perfect, says 1970*/
+                        timeSent={(new Date(message.timeSent.seconds)).toUTCString()}/>
                     ))}
                 </View>
             </ScrollView>

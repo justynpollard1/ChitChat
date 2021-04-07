@@ -1,49 +1,62 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import firebase from "firebase";
+import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {auth, db} from "../firebase/Fire";
 import {TextInput} from "react-native-gesture-handler";
 
 class Message extends React.Component{
-
     constructor(props) {
-        super(props)
+        super(props);
+        this.props = props;
         this.state = {
             chatID: this.props.route.params.roomID,
             message: ''
         }
     }
 
+
+
+
     sendMessage = async e => {
         e.preventDefault();
-        let date = new Date();
+        let date = firebase.firestore.Timestamp.now();
 
-        // create a new message document
-        // todo: update time stamp to SERVER TIME, couldn't get it working, moved on instead
+        // add message to the db
         const res = await db.collection('messages').add({
             msg: this.state.message,
-            timeSent: date.getDate()+ "/"+date.getMonth() + "/" + date.getFullYear(),
+            timeSent: date,
             uid: auth.currentUser.uid
         });
+        const newMessage = {
+            mid: res.id,
+            msg: this.state.message,
+            timeSent: date,
+            uid: auth.currentUser.uid
+        }
 
-        const res2 = await db.collection('indivualChats').doc(this.state.chatID).update({
-            messages: db.FieldValue.arrayUnion({
-                mid: res.id,
-                msg: this.state.message,
-                timeSent: date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear(),
-                uid: auth.currentUser.uid})
+        let messageArr = [];
+        //get the array of maps from db
+        const ref = await db.collection('indivualChats').doc(this.state.chatID).get();
+        const arr = ref.data().messageRooms;
+        for (let i = 0; i < arr.length; i++){
+            messageArr.push(arr[i]);
+        }
+
+        //add a new map
+        messageArr.push(newMessage);
+        //push array of maps back to db
+        await db.collection('indivualChats').doc(this.state.chatID).update({
+            messages: messageArr
         });
-        window.alert("completed 2");
-
         this.setState({
             message: '',
         })
 
-
+        this.props.navigation.navigate('Message', {roomID: this.state.roomID})
     };
 
     render() {
-
         return (
             <View style={styles.container}>
                 <MessageScroll chatID={this.state.chatID}/>
@@ -55,9 +68,13 @@ class Message extends React.Component{
                     placeholder='message to send'
                     autoCapitalize='none'
                 />
-                
+
                 <TouchableOpacity style={styles.button} onPress={this.sendMessage}>
                     <Text style={styles.buttonText}>Send Message</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('AddPersonToChat', {roomID: this.state.chatID})}>
+                    <Text style={styles.buttonText}>Add Person To Chat</Text>
                 </TouchableOpacity>
 
             </View>

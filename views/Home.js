@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import {db} from '../firebase/Fire';
 import Context from '../contextAPI/context';
 import CurrentChatScroll from '../components/CurrentChatsScroll'
@@ -20,11 +19,11 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.searchBarShow == false)this.setLayout();
+    if (this.state.searchBarShow === false)this.setLayout();
     else this.onSearchButtonClicked()
   }
   componentDidUpdate() {
-    if (this.state.searchBarShow == false)this.setLayout();
+    if (this.state.searchBarShow === false)this.setLayout();
     else this.onSearchButtonClicked()
   }
 
@@ -48,7 +47,7 @@ class Home extends React.Component {
           <Button onPress={() => this.props.navigation.navigate('Settings')} title="Settings"/>
         )
       })
-    
+
   }
 
   //gets search text and looks for users in db
@@ -66,13 +65,13 @@ class Home extends React.Component {
                       .where('name', '<', endcode).get();
         query.forEach(user => {
             usersFoundArray.push([user.data().name, user.data().UID])
-                
+
         })
         await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
   }
 
   //updates search bar text and search state
-  updateSearch = search => {         
+  updateSearch = search => {
     this.setState({ search });
   };
 
@@ -97,21 +96,25 @@ class Home extends React.Component {
     )
   }
 
-  render() {
-    if (this.state.searchBarShow==false) {
-      return (
-        <View style={styles.container}>
-            <CurrentChatScroll navigation={this.props.navigation}/>
-        </View>
-        );
-    } else {
-      return (
-        <View style={styles.container}>
-          <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
-        </View>
-      )
+
+    render() {
+
+
+        if (this.state.searchBarShow===false) {
+            return (
+                <View style={styles.container}>
+                    <CurrentChatScroll navigation={this.props.navigation}/>
+                </View>
+            );
+        } else {
+            return (
+                <View style={styles.container}>
+                    <UserSearchScroll navigation={this.props.navigation} usersFound={this.state.usersFound}/>
+                </View>
+            )
+        }
     }
-  }
+
 }
 
   const styles = StyleSheet.create({
