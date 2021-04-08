@@ -24,6 +24,7 @@ class CurrentChatsScroll extends React.Component {
         this.state.liveQuery = new Parse.Query("ChatRooms");
     }
 
+
     componentDidMount() {
         this.getSingleUserChatRooms();
         this.chatObserver();

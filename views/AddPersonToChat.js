@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import Context from "../contextAPI/context";
 import {SearchBar} from "react-native-elements";
 import GroupChatScroll from "../components/userSearch/GroupChatScroll";
+import {Parse} from "parse/react-native";
 
 class AddPersonToChat extends React.Component{
     static contextType = Context
@@ -19,26 +20,24 @@ class AddPersonToChat extends React.Component{
 
 
 
-    //gets search text and looks for users in db
+//gets search text and looks for users in db
     searchForUser = async() => {
         const usersFoundArray = []
-        var strSearch = this.state.search;
-        var strlength = strSearch.length;
-        var strFrontCode = strSearch.slice(0, strlength-1);
-        var strEndCode = strSearch.slice(strlength-1, strSearch.length);
+        const currentUserId = await Parse.User.current().id;
+        //get all users from the cloud
+        let allUserQuery = new Parse.Query(Parse.Object.extend("User"));
+        let allUserQueryResult = await allUserQuery.find();
 
-        var startcode = strSearch;
-        var endcode= strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
-        const query = await db.collection('users')
-            .where('name', '>=', startcode)
-            .where('name', '<', endcode).get();
-        query.forEach(user => {
-            usersFoundArray.push([user.data().name, user.data().UID])
+        //get all the users that match the search criteria
+        allUserQueryResult.map(x => {
+            if (x.get('name').includes(this.state.search) && x.get('uid') !== currentUserId) {
+                usersFoundArray.push([x.get('name'), x.get('uid')])
+            }
+        });
 
-        })
+
         await new Promise(resolve => this.setState({usersFound: usersFoundArray}, () => resolve()))
     }
-
 
     //updates search bar text and search state
     updateSearch = search => {
@@ -65,6 +64,7 @@ class AddPersonToChat extends React.Component{
             />
         )
     }
+
 
     render() {
         return(

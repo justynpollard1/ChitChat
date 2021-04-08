@@ -3,7 +3,6 @@ import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {TextInput} from "react-native-gesture-handler";
 import {Parse} from "parse/react-native";
-import win from "react-native-web/dist/exports/Dimensions";
 
 class Message extends React.Component{
     constructor(props) {
