@@ -10,7 +10,7 @@ class ChatRoomCard extends React.Component {
     render() {
         return (
             <View>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Message', {roomID: this.props.roomID})}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Message', {roomID: this.props.roomID, navigation: this.props.navigation})}>
                     <View style={styles.container}>
                             <View style={styles.text}><Text style={styles.nameText}>{this.props.otherUserName}</Text></View>
                             <View tyle={styles.text}><Text style={styles.lastMsgText}>{this.props.lastMsg}</Text></View>

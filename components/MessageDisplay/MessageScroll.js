@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dimensions } from 'react-native';
 import { StyleSheet, Text, View, Button, Alert, ScrollView} from 'react-native';
 import {db} from '../../firebase/Fire'
 import MessageCard from './MessageCard'
@@ -29,6 +30,7 @@ export default class MessageScroll extends React.Component {
             const messageInfo = {
                 sender: (await db.collection('users').doc(messagesDoc[i].uid).get()).data().name,
                 msg: messagesDoc[i].msg,
+                senderID: messagesDoc[i].uid,
                 timeSent: messagesDoc[i].timeSent
             }
             messageArray.push(messageInfo)
@@ -45,12 +47,13 @@ export default class MessageScroll extends React.Component {
 
     render(){
         return (
-            <ScrollView>
+            <ScrollView contentContainerStyle={styles.mainViewContainer}>
                 <View>
                     {this.state.messages.map((message) => (
                         <MessageCard
                         sender={message.sender}
                         message={message.msg}
+                        senderID={message.senderID}
                         /*still not perfect, says 1970*/
                         timeSent={(new Date(message.timeSent.seconds)).toUTCString()}/>
                     ))}
@@ -59,3 +62,14 @@ export default class MessageScroll extends React.Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    mainViewContainer: {
+        justifyContent: 'flex-end',
+        flexGrow: 1,
+        backgroundColor: '#F3F3F3',
+    }
+});
+
+
+
