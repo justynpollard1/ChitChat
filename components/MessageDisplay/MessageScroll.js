@@ -82,7 +82,7 @@ export default class MessageScroll extends Component {
                         sender={message.sender}
                         message={message.msg}
                         /*still not perfect, says 1970*/
-                        timeSent={(new Date(message.timeSent.seconds)).toUTCString()}/>
+                        timeSent={(message.timeSent.toString())}/>
                     ))}
                 </View>
             </ScrollView>
