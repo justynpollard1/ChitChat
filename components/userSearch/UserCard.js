@@ -21,36 +21,40 @@ export default class UserCard extends React.Component {
         const chatRoomID = result.id;
 
 
+        //get the users ChatRooms, and add the current one
+        const userQuery = new Parse.Query(Parse.Object.extend("User"));
+        let userQueryResult = await userQuery.get(currentUserID);
+        let chatRoomObjID = userQueryResult.get('UserChatRoom').id
 
-        const query = new Parse.Query( Parse.Object.extend("User"));
-
-        //add ChatRoom ID to the current user
-        await query.get(currentUserID).then(currentUser => {
-            let chatRoomArray = currentUser.get('ChatRooms');
+        //add get the chatroom
+        let userRoomQuery = new Parse.Query(Parse.Object.extend("UserChatRoom"));
+        await userRoomQuery.get(chatRoomObjID).then( userRooms => {
+            let chatRoomArray = userRooms.get('ChatRooms');
             //create an array if it doesn't exist
             if(chatRoomArray === undefined){
                 chatRoomArray = []
             }
             chatRoomArray.push(chatRoomID);
-            currentUser.set('ChatRooms', chatRoomArray);
-            currentUser.save();
+            userRooms.set('ChatRooms', chatRoomArray);
+            userRooms.save();
         })
 
 
-        //add message room to the user Clicked on
-        await query.get(userClickedOnID).then(otherUser => {
-            console.log( userClickedOnID+ " " + otherUser.get('chatRooms') + " " + chatRoomID);
-            let chatRoomArray2 = otherUser.get('ChatRooms');
-            // create an array if it doesn't exist
-            if(chatRoomArray2 === undefined){
-                chatRoomArray2 = []
+        //save the new chatroom to the other user
+        userQueryResult = await userQuery.get(userClickedOnID);
+        chatRoomObjID = userQueryResult.get('UserChatRoom').id
+
+        await userRoomQuery.get(chatRoomObjID).then( userRooms => {
+            let chatRoomArray = userRooms.get('ChatRooms');
+            //create an array if it doesn't exist
+            if(chatRoomArray === undefined){
+                chatRoomArray = []
             }
-
-            chatRoomArray2.push(chatRoomID);
-            otherUser.set('ChatRooms', chatRoomArray2);
-            otherUser.save();
-            console.log(chatRoomArray2);
+            chatRoomArray.push(chatRoomID);
+            userRooms.set('ChatRooms', chatRoomArray);
+            userRooms.save();
         })
+
         this.props.navigation.navigate('Message', {roomID: chatRoomID})
     }
 
