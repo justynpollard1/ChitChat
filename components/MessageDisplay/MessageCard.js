@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         marginVertical: 5
     },
     bubbleSelf: {
-        backgroundColor: 'rgb(102, 190, 253)',
+        backgroundColor: '#66BEFD',
         marginLeft: Dimensions.get('window').width*.35,
         marginRight: 10,
         borderRadius: 10,
