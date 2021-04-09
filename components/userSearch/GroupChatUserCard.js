@@ -3,6 +3,7 @@ import {View, StyleSheet, Dimensions, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Context from '../../contextAPI/context';
 import {db} from "../../firebase/Fire";
+import firebase from "firebase";
 
 
 
@@ -17,6 +18,41 @@ export default class GroupChatUserCard extends React.Component {
             uid: ''
         }
     }
+
+    addUserJoinMessage = async()  => {
+        let date = firebase.firestore.Timestamp.now();
+
+        const userName = (await db.collection('users').doc(this.state.uid).get()).data().name
+
+        // add message to the db
+        const res = await db.collection('messages').add({
+            msg: userName + " has joined the chat",
+            timeSent: date,
+            uid: 'zvwrBSFcQ1z8qPHXDwIk'
+        });
+        const newMessage = {
+            mid: res.id,
+            msg: userName + " has joined the chat",
+            timeSent: date,
+            uid: 'zvwrBSFcQ1z8qPHXDwIk'
+        }
+
+        let messageArr = [];
+        //get the array of maps from db
+        const ref = await db.collection('indivualChats').doc(this.state.roomID).get();
+        const arr = ref.data().messages;
+        for (let i = 0; i < arr.length; i++){
+            messageArr.push(arr[i]);
+        }
+
+        //add a new map
+        messageArr.push(newMessage);
+        //push array of maps back to db
+        await db.collection('indivualChats').doc(this.state.roomID).update({
+            messages: messageArr
+        });
+    };
+
     onAddUserPressed = async() => {
         // find better way to get the users ID we clicked on
         const users = db.collection('users');
@@ -55,12 +91,10 @@ export default class GroupChatUserCard extends React.Component {
         await db.collection('indivualChats').doc(this.state.roomID).update({
             userIDs: idArray
         });
+        this.addUserJoinMessage();
         this.setState({
             uid: '',
         })
-
-
-
         //add the room to the users messagesRooms
         this.props.navigation.navigate('Message', {roomID: this.state.roomID})
     };

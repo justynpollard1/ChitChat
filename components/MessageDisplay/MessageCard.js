@@ -15,10 +15,16 @@ class MessageCard extends React.Component {
                 <View style={styles.containerSelf}>
                     <View style={styles.bubbleSelf}>
                             <View style={styles.text}><Text style={styles.body_text}>{this.props.message}</Text></View>
-                            <View tyle={styles.text}><Text style={styles.timeSent_text}>{this.props.timeSent}</Text></View>
+                            <View tyle={styles.text}><Text style={styles.timeSent_text}>{this.props.timeSent.slice(0, 11)}</Text></View>
                     </View>
                 </View>
             )
+        } else if (this.props.senderID == 'zvwrBSFcQ1z8qPHXDwIk') {
+            return (
+                <View style={styles.containerServer}>
+                    <View style={styles.text}><Text style={styles.senderText}>{this.props.message}</Text></View>
+                </View>
+                )
         }
          else {
             return (
@@ -45,10 +51,15 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginVertical: 5
     },
+    containerServer: {
+        alignSelf: 'center',
+        alignItems: 'center',
+        marginVertical: 5
+    },
     bubbleSelf: {
         backgroundColor: 'rgb(102, 190, 253)',
-        width: Dimensions.get('window').width*.70,
-        height: Dimensions.get('window').height*.05,
+        marginLeft: Dimensions.get('window').width*.35,
+        marginRight: 10,
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: {
@@ -61,8 +72,8 @@ const styles = StyleSheet.create({
     },
     bubbleOther: {
         backgroundColor: '#F7993A',
-        width: Dimensions.get('window').width*0.70,
-        height: Dimensions.get('window').height*.05,
+        marginRight: Dimensions.get('window').width*.35,
+        marginLeft: 10,
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: {
@@ -79,13 +90,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     body_text: {
-        marginRight: 50,
         fontStyle: 'normal',
         fontWeight: 'normal',
         fontSize: 12,
         lineHeight: 14,
-        color: 'black',
-        alignItems: 'center',
+        color: '#080808',
+        alignItems: 'flex-start',
         display: 'flex'
     },
     time_sent_container: {
@@ -93,9 +103,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     timeSent_text: {
-        
+        alignSelf: 'flex-end',
+        marginHorizontal: 10,
+        marginBottom: 5,
         fontWeight: 'normal',
-        fontSize: 14,
+        fontSize: 12,
         lineHeight: 14,
         color: '#676767'
     },
@@ -105,14 +117,6 @@ const styles = StyleSheet.create({
         color: "#66BEFD",
         fontSize: 10
     },
-    side_stripe: {
-        position: "absolute",
-        backgroundColor: '#66BEFD',
-        borderBottomLeftRadius: 5,
-        borderTopLeftRadius: 5,
-        width: 5,
-        height: 100,
-      }
   });
 
   export default MessageCard;
