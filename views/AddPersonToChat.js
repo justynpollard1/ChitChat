@@ -19,7 +19,6 @@ class AddPersonToChat extends React.Component{
 
 
 
-
 //gets search text and looks for users in db
     searchForUser = async() => {
         const usersFoundArray = []
@@ -72,6 +71,7 @@ class AddPersonToChat extends React.Component{
 
             {/* display the search bar */}
             {this.userSearchBar()}
+
 
             <GroupChatScroll navigation={this.props.navigation}
                              usersFound={this.state.usersFound}

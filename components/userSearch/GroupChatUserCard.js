@@ -17,56 +17,52 @@ export default class GroupChatUserCard extends React.Component {
         }
     }
     onAddUserPressed = async() => {
-        let currentUserID = await Parse.User.current().id;
         let userClickedOnID = this.props.uid;
+        let currentChatRoomID = this.state.roomID;
+        let userAlreadyJoined = false;
 
-        const arrayUsers = Parse.User.getUsers();
+        //get the users ChatRooms, and add the current one
+        const userQuery = new Parse.Query(Parse.Object.extend("User"));
+        const userQueryResult = await userQuery.get(userClickedOnID);
+        const chatRoomObjID = userQueryResult.get('UserChatRoom').id
 
-        console.log(arrayUsers);
-        console.log(currentUserID);
-        console.log(userClickedOnID);
-        // find better way to get the users ID we clicked on
-        // const users = db.collection('users');
-        // const snapshot = await users.where('name', '==', this.props.name).get();
-        // if(snapshot.empty) window.alert("userFound")
-        // snapshot.forEach(e => this.setState({
-        //     uid: e.id,
-        // }))
+        //add get the chatroom
+        const userRoomQuery = new Parse.Query(Parse.Object.extend("UserChatRoom"));
+        await userRoomQuery.get(chatRoomObjID).then(room => {
+            let userChatRoomArray = room.get("ChatRooms");
+            if(userChatRoomArray === undefined) userChatRoomArray = [];
 
-        // update the users chatroom
-        // let messageRooms = []
-        // const arr = users.doc(this.state.uid).get()
-        // for (let i = 0; i < arr.length; i++){
-        //     messageRooms.push(arr[i]);
-        // }
-        // messageRooms.push(this.state.roomID);
-        //
-        // await users.doc(this.state.uid).update({
-        //     messageRooms: messageRooms
-        // });
+            //check to see if user is in the chatroom
+            console.log(userChatRoomArray);
+            console.log(userChatRoomArray.includes(userClickedOnID));
+            userChatRoomArray.map( x => {
+                if(x === currentChatRoomID) {
+                    userAlreadyJoined = true
+                    window.alert("User is already Part of this ChatRoom")
+                }
+            })
 
+            //add user if they were not found
+            if(!userAlreadyJoined){
+                userChatRoomArray.push(currentChatRoomID);
+                room.set('ChatRooms', userChatRoomArray);
+                room.save();
+                }
+            })
 
+        //update the users in the chatroom
+        if(!userAlreadyJoined){
+            //update the members of the chatroom, and the new one we clicked on
+            const chatRoomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
+            await chatRoomQuery.get(currentChatRoomID).then(room =>{
+                let usersArray = room.get('users');
+                if(usersArray === undefined) usersArray = [];
 
-        // // update the chatroom members
-        // let idArray = [];
-        // //get the array of maps from db
-        // const ref = await db.collection('indivualChats').doc(this.state.roomID).get();
-        // const arr2 = ref.data().userIDs;
-        // for (let i = 0; i < arr2.length; i++){
-        //     idArray.push(arr2[i]);
-        // }
-        // idArray.push(this.state.uid);
-        //
-        //
-        // //push array of maps back to db
-        // await db.collection('indivualChats').doc(this.state.roomID).update({
-        //     userIDs: idArray
-        // });
-        // this.setState({
-        //     uid: '',
-        // })
-
-
+                usersArray.push(userClickedOnID);
+                room.set('users', usersArray);
+                room.save();
+            })
+        }
 
         //add the room to the users messagesRooms
         this.props.navigation.navigate('Message', {roomID: this.state.roomID})

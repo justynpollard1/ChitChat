@@ -46,9 +46,12 @@ class CurrentChatsScroll extends React.Component {
         //query the cloud and get the array of all ChatRooms the user has
         const userQuery = new Parse.Query(Parse.Object.extend("User"));
         const userQueryResult = await userQuery.get(currentUserID);
-        const arrayChatRoomIDs = userQueryResult.get('ChatRooms');
+        const chatRoomObjID = userQueryResult.get('UserChatRoom').id
 
-
+        //get the room object associated with the user
+        const userRoomQuery = new Parse.Query(Parse.Object.extend("UserChatRoom"));
+        const userRoomQueryResult = await userRoomQuery.get(chatRoomObjID);
+        const arrayChatRoomIDs = userRoomQueryResult.get('ChatRooms')
 
         //go through the array of chatroomIDs assigned to the user, get the other user from the chatroom who arent current user
         let arrayLength = arrayChatRoomIDs.length;
@@ -89,6 +92,7 @@ class CurrentChatsScroll extends React.Component {
     chatObserver = () => {
         let subscription = this.state.queryClient.subscribe(this.state.liveQuery);
         subscription.on('update', (object) =>{
+
             this.getSingleUserChatRooms();
         })
     }

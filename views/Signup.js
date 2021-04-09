@@ -43,12 +43,24 @@ class Signup extends React.Component {
         }
         //add the uid to the assigned user
         let userId = await Parse.User.current().id;
+
+        //create a new chatroom for the user
+        const UserChatRoom = Parse.Object.extend("UserChatRoom");
+        const userChatRoom = new UserChatRoom();
+        userChatRoom.set('User', Parse.User.current())
+        const userChatRoomResult = await userChatRoom.save();
+
+
+        //save the chatroom with the user
         let User = Parse.Object.extend('User');
         let query = new Parse.Query(User);
         await query.get(userId).then(user => {
             user.set('uid', userId);
-            user.save();
+            user.save('UserChatRoom', userChatRoomResult);
         })
+
+
+
 
         // save the new users data for the rest of the program
         const data = {

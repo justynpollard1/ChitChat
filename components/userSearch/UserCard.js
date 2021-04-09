@@ -18,37 +18,39 @@ export default class UserCard extends React.Component {
         const chatRoom = new ChatRoom();
         chatRoom.set('users', [currentUserID, userClickedOnID])
         const result = await chatRoom.save();
-
         const chatRoomID = result.id;
 
 
-        const user = Parse.Object.extend("User");
-        const query = new Parse.Query(user);
+
+        const query = new Parse.Query( Parse.Object.extend("User"));
 
         //add ChatRoom ID to the current user
-        await query.get(currentUserID).then(user => {
-            let chatRoomArray = user.get('ChatRooms');
+        await query.get(currentUserID).then(currentUser => {
+            let chatRoomArray = currentUser.get('ChatRooms');
             //create an array if it doesn't exist
             if(chatRoomArray === undefined){
                 chatRoomArray = []
             }
             chatRoomArray.push(chatRoomID);
-            user.set('ChatRooms', chatRoomArray);
-            user.save();
+            currentUser.set('ChatRooms', chatRoomArray);
+            currentUser.save();
         })
 
+
         //add message room to the user Clicked on
-        await query.get(userClickedOnID).then(user => {
-            let chatRoomArray = user.get('ChatRooms');
-            //create an array if it doesn't exist
-            if(chatRoomArray === undefined){
-                chatRoomArray = []
+        await query.get(userClickedOnID).then(otherUser => {
+            console.log( userClickedOnID+ " " + otherUser.get('chatRooms') + " " + chatRoomID);
+            let chatRoomArray2 = otherUser.get('ChatRooms');
+            // create an array if it doesn't exist
+            if(chatRoomArray2 === undefined){
+                chatRoomArray2 = []
             }
-            chatRoomArray.push(chatRoomID);
-            user.set('ChatRooms', chatRoomArray);
-            user.save();
+
+            chatRoomArray2.push(chatRoomID);
+            otherUser.set('ChatRooms', chatRoomArray2);
+            otherUser.save();
+            console.log(chatRoomArray2);
         })
-        window.alert(chatRoomID);
         this.props.navigation.navigate('Message', {roomID: chatRoomID})
     }
 
