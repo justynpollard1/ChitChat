@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import MessageScroll from '../components/MessageDisplay/MessageScroll'
 import {TextInput} from "react-native-gesture-handler";
+import { Dimensions } from 'react-native';
 import {Parse} from "parse/react-native";
 
 class Message extends React.Component{
@@ -12,6 +13,22 @@ class Message extends React.Component{
             chatID: this.props.route.params.roomID,
             message: ''
         }
+    }
+
+    componentDidMount = () => {
+        this.setLayout()
+    }
+
+    setLayout = () => {
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity style={styles.buttonAddPreson} onPress={() => this.props.navigation.navigate('AddPersonToChat', {roomID: this.state.chatID})}>
+                    <View style={styles.buttonAddPerson}>
+                        <Image style={{width: 30, height: 30, tintColor: 'white'}} source={require('../assets/addPersonIcon.png')}/>
+                    </View>
+                </TouchableOpacity>
+          )
+        })
     }
 
     sendMessage = async e => {
@@ -61,55 +78,111 @@ class Message extends React.Component{
 
     render() {
         return (
-            <View style={styles.container}>
-                <MessageScroll chatID={this.state.chatID}/>
+            <View style={styles.mainViewContainer}>
+                <View style={styles.scrollContainer}>
+                    <MessageScroll chatID={this.state.chatID}/>
+                </View>
+                
+                <View style={styles.ioContainer}>
+                    <TextInput
+                        style={styles.input}
+                        value={this.state.message}
+                        onChangeText={message => this.setState({message})}
+                        placeholder='message to send'
+                        autoCapitalize='none'
+                    />
 
-                <TextInput
-                    style={styles.input}
-                    value={this.state.message}
-                    onChangeText={message => this.setState({message})}
-                    placeholder='message to send'
-                    autoCapitalize='none'
-                />
-
-                <TouchableOpacity style={styles.button} onPress={this.sendMessage}>
-                    <Text style={styles.buttonText}>Send Message</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('AddPersonToChat', {roomID: this.state.chatID})}>
-                    <Text style={styles.buttonText}>Add Person To Chat</Text>
-                </TouchableOpacity>
-                <Text>Messages</Text>
-
+                    <TouchableOpacity onPress={this.sendMessage}>
+                        <View style={styles.buttonSendMessage}>
+                            <Image style={styles.imageStyle} source={require('../assets/SendIcon.png')}/>
+                        </View>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'white',
+    mainViewContainer: {
+        backgroundColor: '#F3F3F3',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        flex: 1,
+    },  
+    scrollContainer: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height*.74,
+
     },
-    text: {
-        fontSize: 50,
-        color: 'blue'
+    ioContainer: {
+        marginTop: 15,
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: Dimensions.get('window').width*.95,
+        height: Dimensions.get('window').height*.05,
+        marginBottom: 20,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+	        width: 3,
+	        height: 15,
+        },
+        shadowRadius: 3.84,
+        shadowOpacity: 0.1,
+        elevation: 5,
     },
     input: {
+        width: (Dimensions.get('window').width*.95)-45,
         bottom: 0,
-        fontSize: 50,
-        color: 'blue'
+        fontSize: 20,
+        color: 'grey',
+        height: Dimensions.get('window').height*.05,
     },
     buttonText: {
         fontSize: 20,
         fontWeight: 'bold',
         color: 'black'
     },
-    button: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff',
-        borderWidth: 5
-    }
+    buttonSendMessage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 40,
+        height: 40,
+        backgroundColor: '#66BEFD',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+	        width: 3,
+	        height: 15,
+        },
+        shadowRadius: 3.84,
+        shadowOpacity: 0.1,
+        elevation: 5,
+    },
+    buttonAddPerson: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 40,
+        height: 40,
+        backgroundColor: '#66BEFD',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+	        width: 3,
+	        height: 15,
+        },
+        shadowRadius: 3.84,
+        shadowOpacity: 0.1,
+        elevation: 5,
+        marginLeft: 5
+    },
+    imageStyle: {
+        width: 30,
+        height: 30,
+     }
 });
 
 export default Message;

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {ScrollView, View} from 'react-native';
+import {StyleSheet, ScrollView, View} from 'react-native';
 import MessageCard from './MessageCard'
 import {Parse} from "parse/react-native";
 
@@ -75,17 +75,27 @@ export default class MessageScroll extends Component {
 
     render(){
         return (
-            <ScrollView>
+            <ScrollView contentContainerStyle={styles.mainViewContainer}>
                 <View>
                     {this.state.messages.map((message) => (
                         <MessageCard
                         sender={message.sender}
                         message={message.msg}
+                        senderID={message.senderID}
                         /*still not perfect, says 1970*/
-                        timeSent={(message.timeSent.toString())}/>
+                        timeSent={(new Date(message.timeSent.seconds)).toUTCString()}/>
                     ))}
                 </View>
             </ScrollView>
         )
     }
 }
+
+
+const styles = StyleSheet.create({
+    mainViewContainer: {
+        justifyContent: 'flex-end',
+        flexGrow: 1,
+        backgroundColor: '#F3F3F3',
+    }
+});
