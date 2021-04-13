@@ -30,10 +30,10 @@ class CurrentChatsScroll extends React.Component {
         this.chatObserver();
     }
 
-    componentWillUnmount() {
-        this.state.queryClient.unsubscribe(this.state.liveQuery);
-        this.getSingleUserChatRooms();
-    }
+    // componentWillUnmount() {
+    //     this.state.queryClient.unsubscribe(this.state.liveQuery);
+    //     this.getSingleUserChatRooms();
+    // }
 
     getSingleUserChatRooms = async() => {
         //reset the variable
@@ -103,12 +103,13 @@ class CurrentChatsScroll extends React.Component {
             <ScrollView>
                 <View>
                     {this.state.roomData.map((info) => (
+                        <React.Fragment key={info.roomID}>
                         <ChatRoomCard
-                            key={info.roomID}
                         navigation={this.props.navigation}
                         roomID={info.roomID}
                         otherUserName={info.otherUserName}
                         lastMsg={info.lastMsg}/>
+                        </React.Fragment>
                     ))}
                 </View>
             </ScrollView>

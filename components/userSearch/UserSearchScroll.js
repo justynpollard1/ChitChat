@@ -21,7 +21,6 @@ export default class UserSearchScroll extends React.Component {
                 <View>
                     {this.state.userCardData.map((data) => (
                         <UserCard
-                            key = {data.id}
                         navigation={this.props.navigation}
                         name={data[0]}
                         uid={data[1]}/>

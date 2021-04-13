@@ -81,7 +81,6 @@ export default class MessageScroll extends Component {
                     {this.state.messages.map((message) => (
                         <React.Fragment key={message.senderID}>
                         <MessageCard
-                        key={message.senderID}
                         sender={message.sender}
                         message={message.msg}
                         senderID={message.senderID}

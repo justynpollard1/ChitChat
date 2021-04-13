@@ -23,6 +23,7 @@ export default class GroupChatScroll extends React.Component {
                 <View>
                     {this.state.userCardData.map((data) => (
                         /*create the groupChat user Card*/
+                        <React.Fragment key={data.id}>
                         <GroupChatUserCard
                             key={data.id}
                             navigation={this.props.navigation}
@@ -30,6 +31,7 @@ export default class GroupChatScroll extends React.Component {
                             uid={data[1]}
                             roomID ={this.state.roomID}
                         />
+                        </React.Fragment>
                     ))}
                 </View>
             </ScrollView>
