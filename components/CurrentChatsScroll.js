@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, LogBox} from 'react-native';
 import Context from '../contextAPI/context';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import ChatRoomCard from './ChatRoomCard';
 import {Parse} from "parse/react-native";
 
@@ -30,10 +29,11 @@ class CurrentChatsScroll extends React.Component {
         this.chatObserver();
     }
 
-    // componentWillUnmount() {
-    //     this.state.queryClient.unsubscribe(this.state.liveQuery);
-    //     this.getSingleUserChatRooms();
-    // }
+    componentWillUnmount() {
+        LogBox.ignoreAllLogs();
+        this.state.queryClient.unsubscribe(this.state.liveQuery);
+        this.getSingleUserChatRooms();
+    }
 
     getSingleUserChatRooms = async() => {
         //reset the variable

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {StyleSheet, ScrollView, View} from 'react-native';
+import {StyleSheet, ScrollView, View, LogBox} from 'react-native';
 import MessageCard from './MessageCard'
 import {Parse} from "parse/react-native";
 
@@ -8,6 +8,7 @@ import {Parse} from "parse/react-native";
 export default class MessageScroll extends Component {
 
     constructor(props){
+        LogBox.ignoreAllLogs();
         super(props)
         this.state= {
             roomID: this.props.chatID,
@@ -32,7 +33,6 @@ export default class MessageScroll extends Component {
     }
 
     componentWillUnmount(){
-        console.disableYellowBox = true;
         this.state.queryClient.unsubscribe(this.state.liveQuery);
         this.messageObserver();
     }
@@ -81,7 +81,7 @@ export default class MessageScroll extends Component {
 
                 <View>
                     {this.state.messages.map((message) => (
-                        <React.Fragment key={message.senderID}>
+                        <React.Fragment key={message.msg}>
                         <MessageCard
                         sender={message.sender}
                         message={message.msg}
