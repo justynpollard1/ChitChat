@@ -6,7 +6,6 @@ import {Parse} from "parse/react-native";
 
 
 export default class MessageScroll extends Component {
-
     constructor(props){
         LogBox.ignoreAllLogs();
         super(props)

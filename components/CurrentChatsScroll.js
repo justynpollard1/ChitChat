@@ -101,6 +101,7 @@ class CurrentChatsScroll extends React.Component {
     render() {
         return (
             <ScrollView>
+
                 <View>
                     {this.state.roomData.map((info) => (
                         <React.Fragment key={info.roomID}>

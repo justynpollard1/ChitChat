@@ -19,14 +19,64 @@ class Message extends React.Component{
         this.setLayout()
     }
 
+    removeMeFromChat= async () => {
+        const currentUserId = await Parse.User.current().id;
+        // window.alert("current user " + currentUserId + "current room " + this.state.chatID);
+        //remove the current chatroom from my profile
+        const userQuery = new Parse.Query(Parse.Object.extend("User"));
+        let userQueryResult = await userQuery.get(currentUserId);
+        let chatRoomObjID = userQueryResult.get('UserChatRoom').id
+        let userRoomQuery = new Parse.Query(Parse.Object.extend("UserChatRoom"));
+        let chatRoomRemoved = [];
+        await userRoomQuery.get(chatRoomObjID).then( userRooms => {
+            let chatRoomArray = userRooms.get('ChatRooms');
+            //create an array if it doesn't exist
+            if(chatRoomArray !== undefined){
+                chatRoomArray.map(roomID => {
+                    if (roomID !== this.state.chatID){
+                        chatRoomRemoved.push(roomID);
+                    }
+                })
+                userRooms.set('ChatRooms', chatRoomRemoved);
+                userRooms.save();
+            }
+        })
+        // window.alert("removed from mine");
+        //remove the current chatroom from the chatroom users
+        const roomQuery = new Parse.Query(Parse.Object.extend("ChatRooms"));
+        await roomQuery.get(this.state.chatID).then(chatroom => {
+            let userArray = chatroom.get('users');
+            let updatedUsers = [];
+            if(userArray !== undefined){
+                userArray.map(id => {
+                    if(id !== currentUserId){
+                        updatedUsers.push(id);
+                    }
+                })
+                chatroom.set('users', updatedUsers);
+                chatroom.save();
+            }
+        })
+
+        window.alert("you have removed yourself from the chatroom");
+        this.props.navigation.replace('HomeStack', {screen: 'Home'});
+    }
+
     setLayout = () => {
         this.props.navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={styles.buttonAddPreson} onPress={() => this.props.navigation.navigate('AddPersonToChat', {roomID: this.state.chatID})}>
-                    <View style={styles.buttonAddPerson}>
-                        <Image style={{width: 30, height: 30, tintColor: 'white'}} source={require('../assets/addPersonIcon.png')}/>
-                    </View>
-                </TouchableOpacity>
+                <View style={{flexDirection:"row"}}>
+                    <TouchableOpacity style={styles.buttonAddPreson} onPress={() => this.props.navigation.navigate('AddPersonToChat', {roomID: this.state.chatID})}>
+                        <View style={styles.buttonAddPerson}>
+                            <Image style={{width: 30, height: 30, tintColor: 'white'}} source={require('../assets/addPersonIcon.png')}/>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonAddPreson} onPress={() => this.removeMeFromChat()}>
+                        <View style={styles.buttonAddPerson}>
+                            <Image style={{width: 30, height: 30, tintColor: 'white'}} source={require('../assets/removeIcon.webp')}/>
+                        </View>
+                    </TouchableOpacity>
+                </View>
           )
         })
     }
@@ -82,7 +132,7 @@ class Message extends React.Component{
                 <View style={styles.scrollContainer}>
                     <MessageScroll chatID={this.state.chatID}/>
                 </View>
-                
+
                 <View style={styles.ioContainer}>
                     <TextInput
                         style={styles.input}
@@ -111,7 +161,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         flex: 1,
-    },  
+    },
     scrollContainer: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height*.74,

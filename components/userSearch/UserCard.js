@@ -21,7 +21,7 @@ export default class UserCard extends React.Component {
         const chatRoomID = result.id;
 
 
-        //get the users ChatRooms, and add the current one
+        //get the users ChatRooms
         const userQuery = new Parse.Query(Parse.Object.extend("User"));
         let userQueryResult = await userQuery.get(currentUserID);
         let chatRoomObjID = userQueryResult.get('UserChatRoom').id
