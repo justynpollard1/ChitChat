@@ -6,6 +6,7 @@ import {Parse} from "parse/react-native";
 
 
 export default class MessageScroll extends Component {
+
     constructor(props){
         super(props)
         this.state= {
@@ -31,6 +32,7 @@ export default class MessageScroll extends Component {
     }
 
     componentWillUnmount(){
+        console.disableYellowBox = true;
         this.state.queryClient.unsubscribe(this.state.liveQuery);
         this.messageObserver();
     }
@@ -84,7 +86,6 @@ export default class MessageScroll extends Component {
                         sender={message.sender}
                         message={message.msg}
                         senderID={message.senderID}
-                        /*still not perfect, says 1970*/
                         timeSent={message.timeSent.toString()}/>
                         </React.Fragment>
                     ))}
