@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     nameText: {
         fontWeight: "400",
         color: "black",
-        fontSize: 20,
+        fontSize: 14,
     },
     lastMsgText: {
         color: 'grey'
