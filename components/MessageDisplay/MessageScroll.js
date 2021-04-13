@@ -76,8 +76,10 @@ export default class MessageScroll extends Component {
     render(){
         return (
             <ScrollView contentContainerStyle={styles.mainViewContainer}>
+
                 <View>
                     {this.state.messages.map((message) => (
+                        <React.Fragment key={message.senderID}>
                         <MessageCard
                         key={message.senderID}
                         sender={message.sender}
@@ -85,6 +87,7 @@ export default class MessageScroll extends Component {
                         senderID={message.senderID}
                         /*still not perfect, says 1970*/
                         timeSent={message.timeSent.toString()}/>
+                        </React.Fragment>
                     ))}
                 </View>
             </ScrollView>
