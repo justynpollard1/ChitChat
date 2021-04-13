@@ -24,6 +24,7 @@ export default class GroupChatScroll extends React.Component {
                     {this.state.userCardData.map((data) => (
                         /*create the groupChat user Card*/
                         <GroupChatUserCard
+                            key={data.id}
                             navigation={this.props.navigation}
                             name={data[0]}
                             uid={data[1]}

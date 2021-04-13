@@ -104,6 +104,7 @@ class CurrentChatsScroll extends React.Component {
                 <View>
                     {this.state.roomData.map((info) => (
                         <ChatRoomCard
+                            key={info.roomID}
                         navigation={this.props.navigation}
                         roomID={info.roomID}
                         otherUserName={info.otherUserName}

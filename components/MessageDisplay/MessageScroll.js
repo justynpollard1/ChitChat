@@ -79,11 +79,12 @@ export default class MessageScroll extends Component {
                 <View>
                     {this.state.messages.map((message) => (
                         <MessageCard
+                        key={message.senderID}
                         sender={message.sender}
                         message={message.msg}
                         senderID={message.senderID}
                         /*still not perfect, says 1970*/
-                        timeSent={(new Date(message.timeSent.seconds)).toUTCString()}/>
+                        timeSent={message.timeSent.toString()}/>
                     ))}
                 </View>
             </ScrollView>
